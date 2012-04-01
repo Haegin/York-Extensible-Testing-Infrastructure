@@ -1,0 +1,87 @@
+The libraries included in this repositories are here only for convenience.
+If you would like to use the latest version of each library, please follow 
+the link indicated below. If you have commit rights and would like to update
+such libraries, please do so once you tested the update.
+
+
+Javassist: 
+----------
+Library used to instrument the bytecode to obtain branch coverage.
+and other more advanced features.
+Version included: 3.15.0
+Where to find it: http://www.javassist.org
+File: javassist.jar
+Introduced by: Manuel Oriol
+Introduced on: 30.06.2010
+Last updated: 05.08.2011 by Manuel Oriol
+
+JML:
+----
+Library used to test Java programs annotated with JML annotations.
+Version included: ?
+Where to find it: http://www.eecs.ucf.edu/~leavens/JML/
+Files: jmlmodels.jar jmlmodelsnonrac.jar jmlruntime.jar jmljunitruntime.jar
+Introduced by: Vasileios Dimitriadis 
+Introduced on: 29.07.2009
+Last updated: 29.07.2009 by Vasileios Dimitriadis
+
+Hadoop:
+-------
+Library used to distribute testing jobs over a cloud.
+Version included: 0.19.2
+Where to find it: http://hadoop.apache.org/
+File: hadoop-0.19.2-core.jar 
+Introduced by: Faheem Ullah
+Introduced on: 21.08.2009
+Last updated: 21.08.2009 by Faheem Ullah
+
+CofoJa: 
+-------
+Library used to test Java programs annonated using the CoFoJa annotations.
+Version included: 20110803
+Where to find it: http://code.google.com/p/cofoja/ 
+File: cofoja.jar
+Introduced by: Manuel Oriol
+Introduced on: 03.08.2011
+Last updated: 03.08.2011 by Manuel Oriol
+
+jgap: 
+-----
+Library used to perform evolutionary testing.
+Version included: ?
+Where to find it: http://jgap.sourceforge.net/
+File: jgap.jar
+Introduced by: Lucas Silva
+Introduced on: 30.04.2011
+Last updated: 30.04.2011 updated by Lucas Silva
+
+Kermeta interpreter (lite)
+-------
+Library used to run kermeta programs to test.
+Was repackaged especially for Yeti, with some bugfixes and less classes.
+Version included: ?
+Where to find it: svn://scm.gforge.inria.fr/svn/kermeta/trunk/kermeta_projects
+File: kermeta-interpreter-lite.jar
+Introduced by: Erwan Bousse
+Introduced on: 30.08.2011
+Last updated: 30.08.2011 updated by Erwan Bousse
+
+Kermeta interpreter simplifier
+-------
+Library used to simplify the use of the kermeta interpreter
+Version included: v2
+Where to find it: ?
+File: kermeta-simplified-interpreter.jar
+Introduced by: Erwan Bousse
+Introduced on: 30.08.2011
+Last updated: 30.08.2011 updated by Erwan Bousse
+
+Apache Commons IO
+-------
+Library used within the Kermeta interpreter simplifier in order to list files recursively
+Version included: 2.0.1
+Where to find it: http://commons.apache.org/io/
+File: commons-io-2.0.1.jar
+Introduced by: Erwan Bousse
+Introduced on: 30.08.2011
+Last updated: 30.08.2011 updated by Erwan Bousse

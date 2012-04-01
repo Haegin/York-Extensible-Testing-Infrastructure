@@ -1,0 +1,235 @@
+<!-- 
+ANT build script (ANT is a Java & XML based cross-platform build tool 
+and available at http://jakarta.apache.org/ant/). 
+
+author: whoschek@lbl.gov 
+
+See the target "usage" further below for instructions on how to build the software.
+-->
+
+
+<!-- ================================================================= -->
+<!-- NOTE: all directories are relative to YetiFreshCompile/           -->
+<!-- ================================================================= -->
+<project name="yeti" default="help" basedir=".">
+
+	<property name="version" value="1.0.1" />
+
+	<property name="proj.title" value="Yeti" />
+
+	<!-- The directory where *.java files are stored. -->
+	<property name="javac.src" value="." />
+
+	<!-- Destination for *.class files -->
+	<property name="javac.dest" value="build" />
+
+	<!-- Location of jar files -->
+	<property name="jar.dir" value="lib" />
+
+	<!-- Name of Yeti jar file to be generated -->
+	<property name="jar.filename" value="yeti.jar" />
+
+	<!-- Name of Yeti jar file to be generated -->
+	<property name="src-jar.filename" value="yeti-src.jar" />
+
+
+	<!-- Construct classpath for compilation-->
+	<path id="javac.classpath">
+		<fileset dir="${jar.dir}">
+			<include name="*.jar" />
+			<exclude name="${jar.filename}" />
+		</fileset>
+	</path>
+
+	<!-- The base directory relative to which most targets are built (not needed actually)-->
+	<!-- <property name="base" value="."/> -->
+
+
+
+	<!-- ================================================================= -->
+	<!-- Default target                                                    -->
+	<!-- ================================================================= -->
+	<target name="help">
+		<echo>
+First cd into the dir this build file is placed in:
+
+	cd trunk
+	 	
+Then type one of the following to build the software:
+
+	ant -help         - Print help on general ant usage		
+	ant help          - Print this help text		
+	ant build         - Compile, generate .classes, jar.
+	 	
+Further individual targets used internally by above targets:
+	
+	javac             - Compile all *.java files into .class files	
+	jar               - Generate jar file(s) from .class files	
+	
+</echo>
+	</target>
+
+
+	<!-- ================================================================= -->
+	<!-- Initialize variables                                              -->
+	<!-- NOTE: all directories are relative to YetiFreshCompile            -->
+	<!-- ================================================================= -->
+	<target name="init">
+		<tstamp />
+	</target>
+
+
+	<!-- ================================================================= -->
+	<!-- Remove all generated (compiled) class files.                      -->
+	<!-- ================================================================= -->
+	<target name="clean">
+		<delete dir="${javac.dest}" />
+	</target>
+
+	<!-- ================================================================= -->
+	<!-- Build the software (without generating a distribution)            -->
+	<!-- ================================================================= -->
+	<target name="build" depends="javac, jar">
+	</target>
+
+
+	<!-- ================================================================= -->
+	<!-- Compile all *.java files                                          -->
+	<!-- ================================================================= -->
+	<target name="javac" depends="clean">
+
+		<mkdir dir="${javac.dest}" />
+		<javac srcdir="${javac.src}" destdir="${javac.dest}" includes="**/*.java" excludes=".svn/*" deprecation="on" debug="on">
+
+			<classpath refid="javac.classpath" />
+		</javac>
+
+	</target>
+
+
+	<!-- ================================================================= -->
+	<!-- Generate jar file(s) from *.class files                           -->
+	<!-- ================================================================= -->
+	<target name="jar">
+
+		<delete file="${jar.dir}/${jar.filename}" />
+
+		<jar 	jarfile="${jar.dir}/${jar.filename}" 
+				basedir="${javac.dest}" 
+				index="yes" 
+				compress="yes" 
+				casesensitive="yes"
+				includes="yeti/**/*.class"
+		/>
+	</target>
+
+	<!-- ================================================================= -->
+	<!-- Generate jar file(s) from *.class files                           -->
+	<!-- ================================================================= -->
+	<target name="src-jar">
+
+		<delete file="${jar.dir}/${src-jar.filename}" />
+		<jar 	jarfile="${jar.dir}/${src-jar.filename}" 
+				index="yes" 
+				compress="yes" 
+				basedir="${javac.src}" 
+				casesensitive="yes"
+				includes="yeti/**/*.java"
+		/>
+	</target>
+
+	<!-- ================================================================= -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of JML      -->
+	<!-- ================================================================= -->
+	<target name="trim-jml" description="Removes the part part of Yeti">
+		<delete file="lib/jmljunitruntime.jar" />
+		<delete file="lib/jmlmodels.jar" />
+		<delete file="lib/jmlmodelsnonrac.jar" />
+		<delete file="lib/jmlruntime.jar" />
+		<delete dir="yeti/environments/jml"/>
+		<java classname="yetidistributil.trimming.Trimmer" classpath=".">
+			<arg value="yeti/Yeti.java" />
+			<arg value="@YetiJMLBinding" />
+		</java>
+	</target>
+	<!-- ================================================================================ -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of Genetic Algorithms      -->
+	<!-- ================================================================================ -->
+	<target name="trim-ga"  description="Removes the genetic algorithms part of Yeti">
+		<delete file="lib/jgap.jar" />
+		<delete dir="yeti/strategies/GA"/>
+		<delete dir="yeti/test/YetiTestGA"/>
+		<java classname="yetidistributil.trimming.Trimmer" classpath=".">
+			<arg value="yeti/Yeti.java" />
+			<arg value="@YetiGeneticAlgorithmsStrategy" />
+		</java>
+	</target>
+	<!-- =============================================================================== -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of the Kermeta binding    -->
+	<!-- =============================================================================== -->
+	<target name="trim-kermeta"  description="Removes the Kermeta part of Yeti">
+		<delete file="lib/commons-io-2.0.1.jar" />
+		<delete file="lib/kermeta-interpreter-lite.jar" />
+		<delete file="lib/kermeta-simplified-interpreter.jar" />
+		<delete dir="yeti/environments/kermeta"/>
+		<java classname="yetidistributil.trimming.Trimmer" classpath=".">
+			<arg value="yeti/Yeti.java" />
+			<arg value="@YetiKermetaBinding" />
+		</java>
+	</target>
+	<!-- =============================================================================== -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of the DotNet binding     -->
+	<!-- =============================================================================== -->
+	<target name="trim-dotnet"  description="Removes the .Net/C# part of Yeti">
+		<delete dir="yeti/environments/csharp"/>
+		<delete dir="yeti/test/DotNetTest"/>
+		<delete dir="yeti/test/Yeti Net-Code Contract"/>
+		<java classname="yetidistributil.trimming.Trimmer" classpath=".">
+			<arg value="yeti/Yeti.java" />
+			<arg value="@YetiDotNETBinding" />
+		</java>
+	</target>
+	<!-- =============================================================================== -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of the cloud extension    -->
+	<!-- =============================================================================== -->
+	<target name="trim-cloud" description="Removes the cloud part of Yeti">
+		<delete dir="yeti/cloud"/>
+		<delete file="lib/hadoop-0.19.2-core.jar" />
+		<java classname="yetidistributil.trimming.Trimmer" classpath=".">
+			<arg value="yeti/Yeti.java" />
+			<arg value="@YetiCloud" />
+		</java>
+	</target>
+	<!-- =============================================================================== -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of the CoFoJa binding     -->
+	<!-- =============================================================================== -->
+	<target name="trim-cofoja" description="Removes the cofoja part of Yeti">
+		<delete file="lib/cofoja.jar" />
+		<delete dir="yeti/environments/cofoja"/>
+		<java classname="yetidistributil.trimming.Trimmer" classpath=".">
+			<arg value="yeti/Yeti.java" />
+			<arg value="@YetiCoFoJaBinding" />
+		</java>
+	</target>
+	<!-- =============================================================================== -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of the documentation      -->
+	<!-- =============================================================================== -->
+	<target name="trim-doc" description="Removes the documentation of Yeti">
+		<delete dir="papers"/>
+		<delete dir="docs"/>
+	</target>
+	<!-- ========================================================================================== -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of everythign but the cofoja binding -->
+	<!-- ========================================================================================== -->
+	<target name="trim-all-but-cofoja"  
+			description="Removes the documentation of Yeti"
+			depends="trim-doc,trim-cloud,trim-dotnet,trim-kermeta,trim-ga,trim-jml"
+	/>
+	<!-- ========================================================================================== -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of everythign but the cofoja binding -->
+	<!-- ========================================================================================== -->
+	<target name="trim-all-but-kermeta"  
+			description="Removes the documentation of Yeti"
+			depends="trim-doc,trim-cloud,trim-dotnet,trim-cofoja,trim-ga,trim-jml"
+	/>
+</project>
