@@ -1,0 +1,35 @@
+require 'date'
+
+def pdflatex(file = "initialAttempt")
+  sh "pdflatex " + file
+end
+
+def bibtex(file = "initialAttempt")
+  sh "pdflatex " + file
+end
+
+def pdfinfo(file = "initialAttempt")
+  sh "pdfinfo " + file + ".pdf"
+end
+
+desc "Compile the .tex including processing bibtex"
+task :compile do
+    pdflatex
+    bibtex
+    pdflatex
+    pdflatex
+end
+
+desc "Show the PDF info"
+task :info do
+    pdfinfo
+end
+
+desc "Show the word count"
+task :wordcount do
+    sh "./word-count.sh"
+end
+
+desc "Recompile the tex file with bibtext then show summary stats"
+task :default => [:compile, :info, :wordcount] do
+end

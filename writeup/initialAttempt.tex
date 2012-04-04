@@ -1,0 +1,167 @@
+\documentclass[authoryearcitations]{UoYCSproject}
+\usepackage[parfill]{parskip}
+\usepackage{listings}
+\usepackage{beramono}
+\usepackage{upquote}
+\usepackage{caption}
+\usepackage{color}
+\usepackage{xcolor}
+
+\lstset{
+    language=Java,
+    basicstyle=\footnotesize\ttfamily,
+    %numbers=left,
+    float=h,
+    tabsize=2,
+    extendedchars=true,
+    breaklines=true,
+    xleftmargin=17pt,
+    framexleftmargin=17pt,
+    framexrightmargin=5pt,
+    framexbottommargin=4pt,
+    numbersep=5pt,
+    numberstyle=\tiny,
+    columns=fullflexible,
+    showstringspaces=false
+}
+
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+
+% A listing environment for small sections of code that shouldn't be broken across multiple pages
+\lstnewenvironment{codesnippet}[1][]
+    {\minipage{\linewidth}
+        \lstset{basicstyle=\ttfamily\footnotesize,frame=single,#1}}
+    {\endminipage}
+
+
+\author{Harry J. Mills}
+\title{Finding the Same Bug Twice}
+\date{Version 0.1, 2012-February-20}
+\supervisor{Iain Bate}
+\MEng
+\wordcount{0}
+
+\includes{}
+\excludes{}
+
+\abstract{Testing is an incredibly important part of software development and automated testing tools can greatly decrease the cost of testing and reduce the burden on the programmer. One problem faced when using automated testing tools that test methods and functions by generating random inputs is that it can be hard to know whether two of the bugs found are caused by the same fault in the code or two unrelated faults that happen to manifest in similar ways or at the same location.
+In this case two bugs are considered to be the same if they result from the same cause, i.e. the same mistake in the code.
+This project investigates a classification based approach to differentiating between bugs found using the YETI automated testing program.}
+
+\dedication{To all students everywhere}
+
+\acknowledgements{
+  I would like to thank my goldfish for all the help it gave me
+  writing this document.
+
+  As usual, my boss was an inspiring source of sagacious advice.
+}
+
+% More definitions & declarations in example.ldf
+
+\begin{document}
+\maketitle
+%\listoffigures
+%\listoftables
+%\renewcommand*{\lstlistlistingname}{List of Listings}
+%\lstlistoflistings
+
+%\cleardoublepage
+%\part{Preliminaries}
+%\label{sec:start}
+%\thispagestyle{empty}\cleardoublepage
+
+\chapter{Introduction}
+\label{cha:Introduction}
+
+Testing is widely recognised as being of great importance when developing software at any scale. The York Extensible Testing Infrastructure (YETI) is a tool that performs automated testing for a variety of languages including Java, .NET languages, and others. To do this it uses random testing techniques in which randomly generated inputs are used to test the different componants of the program under test.
+
+When performing random testing it can be hard to determine if two bugs found during the same test session are the same bug. (For the purposes of this document two bugs are the same if they both arise from the same cause). They may occur at the same place in the code (and determining where a bug occurs isn't always straight forward) but be triggered by different inputs. For example, an erroneous implementation of the sine function could potentially cause a divide by zero error for some inputs and a value outside of the range allowed by the function (from -1.0 to 1.0) for other inputs. These could be classed as two different bugs despite occuring at the same place in the code. In this example the divide by zero error may be caused by a mistake when sanitising the input data whereas the value outside the range may be a logic error in the code. These are different bugs as the programmer would have to change the code in multiple places or ways to fix them both.
+
+This project aims to explore the concept of similarity as it applies to bugs in software, compare the relative benefits and disadvantages of different approaches to detecting similarity and then implement a classifier for the YETI automated testing system. To develop the classifier approaches applied in mutation testing will be used to generate buggy mutants of known working software. These introduced bugs will be used to train the classifier and then a second set of mutants will be used to evaluate its performance.
+
+\chapter{Background}
+\label{cha:Background}
+
+The purpose of this section is to give readers sufficient information on the area of research this project covers so they will be able to better understand the work and see how the work described later in this document fits in to the field.
+
+\section{Testing}
+In his book, the Art of Software Testing, Glenford Myers defines testing as ``the process of executing a program with the intent of finding errors.'' \cite{Myers04}. This can be done in a variety of ways using different techniques that each have different advantages and disadvantages, all with the end goal of testing the system as exhaustively as possible.
+
+Exhaustive testing (in which all the possible inputs are tested to ensure they give the correct output) can be performed but it is only feasible when testing functions with a small number of input combinations and states. As the number of inputs increases the time required to exhaustively test a function rapidly increases, for example, a program that takes two 32 bit integers as input (such as a simple addition function) has 18,446,744,065,119,617,025 possible inputs.
+
+Because exhaustive testing is rarely feasible other ways of measuring test coverage have been devised. Statement coverage is one of these methods. A test suite that obtains 100\% statement coverage is one that ensures every statement is executed by the tests. The problem with this is that there are still paths through the code that may not be tested despite every statement being tested. An example of this is shown in listing \ref{lst:statementCoverage}, where testing the function with an input greater than or equal to five would ensure every line of code is tested but would not test whether the code works when the condition on line 3 is false and the value of b is not set. As b is not initialised to a default value it is likely that if the if condition is false the function will not work as desired.
+
+Branch coverage is another method that has been proposed as a way to measure the completeness of a test suite. Instead of executing every statement the test suite must ensure every possible branch is taken, for example, in the code shown in listing \ref{lst:statementCoverage} testing the function with the inputs a=2 and a=5 would achieve 100\% branch coverage. Branch coverage is not perfect however, for example it will not reveal some errors in the logic at branch points as it only requires both true and false values to be shown for the condition as a whole, not for individual variables within those conditions.
+
+\lstinputlisting[language=Java,float=h,caption=Statement coverage isn't always sufficient,label={lst:statementCoverage}]{statement_coverage.java}
+
+Branch coverage is said to subsume statement coverage. This means that any test suite that obtains branch coverage also obtains statement coverage. It is important to note that this does not mean that any test suite that achieves branch coverage will find all the errors that would be found by any test suite that achieves statement coverage.
+
+There are other metrics used to measure the coverage of a test suite that try to improve on branch coverage. Condition coverage requires that each variable in a condition be shown to be both true and false during tests. This does not subsume branch coverage, as testing with a = true, b = false and a = false, b = true achieves condition coverage but not branch coverage for the code shown in listing \ref{lst:conditionCoverage}. Testing with both a and b set to true as one test and a and b set to false as another would achieve both condition and branch coverage.
+
+\lstinputlisting[language=Java,float=h,caption=Condition coverage does not subsume branch coverage,label={lst:conditionCoverage}]{conditionCoverage.java}
+
+Decision coverage is another metric, similar to branch coverage but with the requirement that all outcomes are tested at each branch applied to any point at which a decision is made. This includes conditionals in assignments as shown in listing \ref{lst:conditionalAssignment}. Decision coverage subsumes branch coverage.
+
+\begin{lstlisting}[caption=Conditional assignments are tested by decision coverage but not branch coverage,label={lst:conditionalAssignment},language=Java,float=h]
+boolean foo = bar || baz;
+\end{lstlisting}
+
+    Modified condition/decision coverage (MC/DC) has the most demanding criteria for a test suite. It requires that at each decision statement the decision must take all output values (as in decision coverage); each part of the predicate is tested as both true and false (condition coverage); and it must be shown that each part of the predicate affects the behaviour independantly. This final point is important for identifying tautologous or contradictory statements that have been erroneously included in conditions. MC/DC subsumes both decision and condition coverage as it requires that the conditions for each are both met as part of it.
+
+%\section{Black Box Testing}
+%Black box testing is a method of testing where no internal information is known about the module under test. The tester is only interested in testing the program against the specification with no concern over the internal structure. The advantage of this style of testing is that the tester only knows what the desired functionality is and is not influenced by the implementation.
+
+%different types of testing - stage in the development methodology, relation to V model etc.
+
+\section{Automated Test Generation}
+Rather than developing a suite of tests that can be run to test the system manually automated test generation techniques can generate and run the tests automatically. This reduces the work required by the programmer as they no longer have to write tests for the software they develop but the tests are only as good as the automated test generation techniques that are used.
+
+The automated test generation process can take several forms. One method involves creating a model of the system under test and then running the test generation software against the model. This produces a test suite that can then be run against the program to be tested. Examples of this method of test generation are given in \cite{Tahat01} and \cite{Clarke98}.
+
+Random testing is another method for automated test generation in which the functions or methods under test are executed with randomly generated inputs in an attempt to locate bugs. Purely random testing is far from ideal as it is unlikely to test key inputs, for example in the code shown in listing \ref{lst:hardToRandomTest} it is very unlikely that the then branch of the if condition will ever get executed using random testing (with a 32 bit integer input the chance is $\frac{1}{2^{32}}$). When tests are automatically generated as in random testing the problem becomes one of choosing the necessary inputs to test with rather than creating tests to run.
+
+Various research has been done in to better ways to generate inputs based on static code analysis. DART is one example of this. Constraints are built up as the code is run from the branching conditions within the code and these constraints are then used to formulate test inputs that will test different branches in the code in an attempt to get 100\% branch coverage.
+
+\subsection{York Extensible Testing Infrastructure}
+The York Extensible Testing Infrastructure (or YETI, for short) is an automated random testing tool developed at the University of York by Manuel Oriol and others in conjunction with ETH, Zurich. It supports testing Java including with various modifications such as JML or CoFoJa, as well as languages on the .NET framework. To do this it uses multiple strategies to generate random inputs to the methods under test and catches undeclared exceptions as they are thrown. These are then processed to detect whether the exception was caused due to a fault in the program or as a result of the testing environment.
+
+This approach has some disadvantages. One problem is that bugs are only detected if they cause an undeclared exception to be thrown. Any bugs where the code executes correctly but gives an incorrect output would not be detected. An example of such code is shown in \ref{lst:notSoRandom}. Because of this it is clear that YETI is not suitable as the only testing performed on a program though it can still be very useful as an easily repeatable, low cost method of testing for errors that will cause the code to fail.
+
+\lstinputlisting[language=Java,float=h,caption={Code that is incorrect yet still runs will not be detected by YETI},label={lst:notSoRandom}]{notSoRandom.java}
+
+%Automated testing techniques have been developed to reduce the cost of testing. Automating the generation and running of tests reduces the time required by the developer as they no longer need to write tests to ensure the correctness of their software. Instead the tests are automatically generated. There are a variety methods to do this depending on the type of testing that is being performed.
+
+\section{Mutation Testing}
+Mutation testing is a method used to judge the performance and coverage of a test suite. The original code, when found to be correct according to the test suite, is altered using minor mutation operators designed to emulate mistakes that may have been made by the programmer. The test suite is then run on the mutated code. If the altered version of the code (called a 'mutant') is found to contain bugs according to the test suite then the mutant is considered 'killed'.
+
+For example, if a mutation operator that changed the increment operator (++) to the decrement operator (--), was applied to the code in listing \ref{lst:incWorking} it would result in the code in listing \ref{lst:decBuggy}. This code would never terminate and a well written test suite should detect this, thus killing the mutant.
+\lstinputlisting[language=Java,float=h,caption=Code before mutation,label={lst:incWorking}]{increment_working.java}
+\lstinputlisting[language=Java,float=h,caption=Code when mutated,label={lst:decBuggy}]{decrement_buggy.java}
+
+If all the mutants created are buggy the test suite should kill all of them. A mutant that is not killed means that the test suite has not detected the change in the code. This may be because the test suite is incomplete and unable to detect the bug that was introduced, alternatively it may be that the mutation does not actually change the behaviour of the program, for example the code shown in listings 2.3 and 2.4 are logically equivalent and thus the test suite will be unable to detect a difference in the outputs.
+
+\lstinputlisting[language=Java,caption=Code using the greater than or equal to operator]{gte.java}
+\lstinputlisting[language=Java,caption=Different but equivalent code]{gt.java}
+
+Mutation testing consists of three main phases, mutant generation, test selection, and mutant detection. In the mutant generation phase the working code is mutated using various mutation operators. This can be done in several different ways which each have different benefits and disadvantages. Either the source code can be mutated and recompiled or the compiled byte code can be mutated. If the source code is mutated it is normally easier for mutations to copy the mistakes a programmer may make. The alternative is to mutate the byte code, this is normally faster than mutating the source code, partly because it doesn't require a recompilation step. The disadvantage is that the mutations are harder to develop and may not be equivalent to the mistakes a programmer may have made during development.
+
+\section{Classification}
+
+
+\chapter{Problem Description}
+\label{cha:ProbDesc}
+This section gives a description of the problem and describes what is, and is not, within the scope of this work.
+
+When YETI is run against software that contains errors it is possible that the same error in the code causes multiple exceptions when given different randomly generated inputs. Additionally, it is possible that different inputs to the same method under test will cause multiple exceptions due to there being multiple, different errors in the code being tested.
+
+The developer or tester interpreting the results from YETI desires an output that gives a clear list of bugs that need to be fixed with as much information as is necessary to fix those bugs in a timely manner. One way to present the information found by YETI in a clear manner that provides as much benefit as possible to the developer is a list of the unique bugs found. This requires removing duplicate bugs without removing any bugs arising from different causes.
+
+The aim of this paper is to develop a classifier to determine whether two bugs are the same and then add this classifier to YETI to improve over the naive approach it currently uses. The current YETI process and the process as it will be with the addition of the classifier are both shown in figure \ref{fig:YETIProcessChange}
+
+This gives rise to the concept of ``sameness'' for bugs. At a fairly abstract level, two bugs are the same if they can be fixed by the same single change to the source code.
+
+\end{document}

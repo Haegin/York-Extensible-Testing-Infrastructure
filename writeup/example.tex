@@ -1,0 +1,1912 @@
+\documentclass[authoryearcitations]{UoYCSproject}
+\author{Jeremy L. Jacob}
+\title{A guide to type-setting project reports in \LaTeXe\ with the
+  \textsf{UoYCSproject} class}
+\date{Version 2.16, 2010-April-02}
+\supervisor{Jeremy L. Jacob}
+\MIP
+\wordcount{8832}
+
+\includes{Appendices \ref{cha:usefulpackages}, \ref{cha:gotchas} and
+  \ref{cha:deptfac}}
+
+\excludes{\autoref{cha:quoteex}}
+
+\abstract{ \LaTeXe\ is a document markup and processing system built
+  upon Donald Knuth's type-setting system, \TeX.
+   
+  \lstinline|UoYCSproject| is a \LaTeXe\ class for producing reports
+  describing projects taken as part of a taught course in the
+  Department of Computer Science at the University of York.  (It is
+  not designed for research degree reports.)
+  
+  A brief introduction to \LaTeXe\ is given.  The
+  \lstinline|UoYCSproject| class is described.
+  
+  This document itself is (inappropriately) an example of the use of
+  the class \lstinline|UoYCSproject|.
+}
+
+\dedication{To all students everywhere}
+
+\acknowledgements{
+  I would like to thank my goldfish for all the help it gave me
+  writing this document.
+ 
+  As usual, my boss was an inspiring source of sagacious advice.
+}
+
+% More definitions & declarations in example.ldf
+
+\begin{document}
+\maketitle
+\listoffigures
+\listoftables
+\renewcommand*{\lstlistlistingname}{List of Listings}
+\lstlistoflistings
+
+\cleardoublepage
+\part{Preliminaries}
+\label{sec:start}
+\thispagestyle{empty}\cleardoublepage
+
+\chapter{Introduction}
+\label{cha:Introduction}
+
+In each taught course, undergraduate or postgraduate, there is a
+compulsory large project.\footnote{Except for the three teaching-year
+  joint degrees with mathematics, where a computer science project is
+  optional.}  By far the largest component of the assessment of the
+project is a written report.  There are various appropriate
+technologies for producing reports.  Among these is Lamport's \LaTeX\ 
+\citep{Lamport1994}.
+
+This user guide describes a \LaTeXe\ class, \lstinline|UoYCSproject|,
+to help in the type-setting of project reports; it is
+(inappropriately) written using that document class.  The division
+into parts, chapters and so on is too heavy for a brief introduction
+and user guide, but appropriate for a project report.  The source code
+for this document is available through the
+\href{http://www-course.cs.york.ac.uk/csw/}{CSW web site}; you are
+welcome to use it as a template.
+
+\section{What is \LaTeX?}
+\label{sec:whatislatex}
+
+\LaTeX, or more strictly, \LaTeXe, is a notation for describing
+document structure (much as HTML or XML applications)
+\citep{Lamport1994}.  It is very different from \textsc{wysiwyg},
+which has been characterised as ``What you see is all you've
+got''\footnote{\citet[p7, Footnote~1]{Lamport1994} says that ``Brian
+  Reid attributed this phrase to himself and/or Brian Kernighan''.}
+
+\LaTeXe\ is built on top of Donald Knuth's \TeX\ \citep{Knuth1984}.
+\TeX\ is a notation for describing type-set pages \emph{plus} a macro
+language.  \LaTeXe\ is a collection of \TeX\ macros that allows for
+extensions and modifications using the class and package mechanisms.
+Thus a \LaTeXe\ description of a document can be turned into print by
+processing it with a suitable program.
+
+Output is available as the original Device Independent (DVI) format
+(by using \lstinline|latex| to process the document), PostScript (by
+converting from DVI) or PDF (by using \lstinline|pdflatex| to process
+the document).
+
+\TeX\ itself was developed by Donald Knuth for type-setting his books,
+particularly his multi-part work on algorithms
+\citep{Knuth1997,Knuth1998a,Knuth1998b}; take a look at them to see
+what is possible.  He also developed a font design program to
+accompany \TeX, \MF.\footnote{An illustration of how Donald Knuth's
+  mind works.  The current version of \TeX\ is 3.141592; the next
+  version, should there be one, will be numbered 3.1415926, and the
+  one after that 3.14159265.  On his death the source code is to be
+  amended to print out `Version \textbackslash Pi', and no further
+  changes will be allowed.  Similarly, \MF\ version numbers are
+  converging on \begin{math}e\end{math}; currently it is
+  Version~2.71828.}
+
+\section{Advantages of \TeX}
+\label{sec:advantagesoftex}
+
+\TeX\ has a very sophisticated text type-setting algorithm; its
+implementation is proved optimal (Donald Knuth did more or less found
+the theory of algorithms).  The PDF\TeX\ engine extends the algorithm
+to include hanging punctuation, for even better results.  (See
+\href{http://www.tug.org/texshowcase/}{the \TeX\ showcase} for several
+examples; it lives at \url{http://www.tug.org/texshowcase/}.)
+
+\TeX\ has a very sophisticated mathematics type-setting algorithm.
+
+\TeX\ also has a Turing-equivalent macro language so that you can
+program substructures in your document.
+
+\section{Advantages of \LaTeXe}
+\label{sec:advantagesoflatex}
+
+\LaTeXe\ provides a pre-defined set of document structures (using the
+\TeX\ macro language), and hooks for integrating further structures.
+
+\LaTeXe\ simplifies the task of writing \TeX\ macros (unless you need
+something very sophisticated).
+
+\section{Advantages of a programmable mark-up language}
+\label{sec:advantagesofprogrammable}
+
+I consider the ability to write definitions the greatest advantage of
+\TeX-like systems.
+
+Such a facility enables its users to design a collection of macros
+that reflect the abstract syntax of important structures in the
+document (later we will see an example of part of a collection of
+macros for describing cryptographic protocols).  Just doing this will
+help you ask the right questions about your project, even if you end
+up using some other document processing system.  The fact that
+\LaTeXe\ also lets you associate type-setting commands with each
+element of the abstract syntax is an added bonus, and one that gives
+you consistent type-setting across the document, and between
+documents.
+
+\cleardoublepage
+\chapter{Useful references}
+\label{cha:usefulrefs}
+
+
+\section{Books}
+\label{sec:books}
+
+\begin{description}
+\item[\citet{Lamport1994}] The original source.  It has a reasonable
+  reference manual, but can be terse.  It does not cover package and
+  class writing, nor does it cover more than a handful of useful
+  packages.  It does describe the \BibTeX\ and index making programs.
+\item[\citet{KopkaDaly1999}] A comprehensive reference; it covers
+  everything except the many add-on packages.  Most people use this as
+  their primary reference.
+\item[\citet{MittelbachGoossensBraamsCarlisleRowley2004}] A guide to
+  many of the most useful add-on packages and classes.
+\item[\citet{GoosensRahtzMittelbach1997}] A slightly dated guide to
+  packages for graphics.
+\item[\citet{GoosensRahtzGurariMooreSutor1999}] A slightly dated guide
+  to packages for adding hyperlinks, and producing PDF and HTML from
+  \LaTeXe.
+\end{description}
+
+
+\section{Papers}
+\label{sec:papers}
+
+There are many papers describing \LaTeXe\ and its associated packages.
+They are available on-line, usually through the Comprehensive \TeX\
+Archive Network.\footnote{\CTAN, \url{http://www.ctan.org/.}}.  They
+are usually also available on the \TeX~Live
+distribution,\footnote{\url{http://www.tug.org/texlive/}} which the
+department uses.\footnote{Departmental Linux users should look under
+  \url{file:///usr/local/pkg/} for the current \TeX~Live distribution,
+  and under that for the various \lstinline|doc| directories;
+  documentation is usually in \lstinline|pdf| or \lstinline|dvi|
+  files.}
+
+The useful \emph{general} papers are:
+\begin{description}
+\item[The Not So Short Introduction to \LaTeXe\ 
+  \citep{OetikerPartlHynaSchlegl2002}]\
+  
+  Available in several languages.
+  
+  Be warned that this paper describes the standard classes.  There are
+  a few differences in the class options and declarations bewteen the
+  standard classes and \lstinline|UoYCSProject|.
+\item[Math mode \citep{Voss2007}] A detailed explanation of
+  typesetting mathematics in \LaTeXe.
+\item[The Comprehensive \LaTeX\ Symbol List \citep{Pakin2005}] An
+  enormous list of symbols and how to make them.\footnote{An
+    experimental web application for finding symbols can be found at
+    \url{http://detexify.kirelabs.org/}.}
+\item[Packages in the `graphics' bundle \citep{Carlisle1999}] A bit
+  out of date (it does not describe PDF extensions), but a useful
+  introduction.
+\item[Hypertext marks in \LaTeX\ \citep{RahtzOberdiek2003}] Access to
+  hypertext features via the \lstinline|hyperref| package.
+
+  Most of the effects happen automatically on loading the package.
+
+  It works best in combination with the \lstinline{hypcap} package.
+
+  \lstinline|UoYCSproject| loads these packages for you, and sets some
+  of the manual things to sensible values.
+\item[The \KOMAScript\ bundle \citep{KohmMorawski2003}]\
+
+  \lstinline|UoYCSproject| is based on the \KOMAScript\ 
+  \lstinline|scrreprt| class.  The manual will tell you about several
+  extra facilities available to you (but you should not change layout,
+  and such things).
+\end{description}
+
+\section{Web resources}
+\label{sec:webresources}
+
+\newcommand{\wwwr}[2]{\item[\href{#1}{#2} \textless\url{#1}\textgreater]}
+\begin{description}
+  \wwwr{http://www.ctan.org/}{The Comprehensive \TeX\ Archive Network}\
+  
+  What it says on the label.  Almost everything you need in the way of
+  \TeX\ and friends can be found here.  Also known as \CTAN.
+
+\wwwr{http://www.tug.org/}{The \TeX\ Users Group (TUG)} A useful web
+  site.
+  
+  TUG members get the \TeX~Live distribution as part of their
+  subscription.
+
+\wwwr{http://faq.tug.org/}{\TeX~FAQ}\
+
+  An extremely useful first port of call for solving common problems,
+  hosted by TUG.
+
+\wwwr{http://tug.org/pracjourn/}{The Prac\TeX\ Journal}\
+
+  An on-line journal of \TeX\ practice, including a Q\&A section.
+
+\wwwr{http://www.latex-project.org/}{The \LaTeX\ Project}\
+
+  The centre of the \LaTeX\ project.
+  
+\wwwr{news:comp.text.tex}{The \TeX\ newsgroup}
+  
+  If asked politely, questions not in the FAQ or standard sources of
+  documentation will usually be answered by gurus.  \emph{Minimal}
+  examples of problems, together with the versions of \TeX, \LaTeX\ 
+  and all classes and packages used in the example must be given.
+
+\wwwr{http://research.silmaril.ie/latex/}{Peter Flynn's `Formatting
+  information'}
+
+  \ \\An on-line \LaTeXe{} manual.
+
+\wwwr{http://dartar.free.fr/w/?wakka=latex}{The beauty of \LaTeX{}}
+
+  A page describing typographic advantages of \TeX-based systems over
+  common competitors.
+
+\wwwr{http://en.wikibooks.org/wiki/LaTeX}{A wiki for \LaTeXe{}}
+
+  A relatively new resource; as good or as bad as a Wiki can be.
+
+\wwwr{http://www.tex.ac.uk/tex-archive/info/visualFAQ/visualFAQ.pdf}{A Visual FAQ for \LaTeXe{}}
+
+  The associated README file for this resource says:
+  \begin{quote}\small
+    Having trouble finding the answer to a LaTeX question?  The Visual
+    LaTeX FAQ is an innovative new search interface that presents over
+    a hundred typeset samples of frequently requested document
+    formatting.  Simply click on a hyperlinked piece of text and the
+    Visual LaTeX FAQ will send your Web browser to the appropriate
+    page in the UK TeX FAQ.
+  \end{quote}
+
+\wwwr{http://www.mathtran.org/toys/jfine/editor2.html}{MathTran
+  instant preview}
+
+A web-based application to let you try out small pieces of \TeX\
+(\emph{not} \LaTeXe) source code (especially mathematical source code)
+to see what the type-set version looks like.
+\end{description}
+
+\cleardoublepage
+\chapter{The \LaTeX\ edit-process cycle}
+\label{cha:editprocess}
+
+The standard books on \LaTeX\ describe the process by which you turn
+your document description into ink.  Most describe this process using
+\lstinline|latex|, which produces DVI format, and a DVI viewer, such
+as \lstinline|xdvi|.
+
+Since these books were written it has become more convenient to use
+\lstinline|pdflatex|, which produces PDF format, and a PDF viewer such
+as \lstinline|xpdf| or \lstinline|acroread| (\lstinline|xpdf| is
+slightly more convenient than \lstinline|acroread|, although it does
+not support all the features that \lstinline|acroread| does, nor does
+it have as good rendering).
+
+\LaTeXe\ source may be created using any editor.  Several editors have
+support for \TeX\ and \LaTeXe, including managing the edit-create
+cycle.  I like \lstinline|emacs| with the AUC\TeX\ enhancements to the
+\TeX\ modes; Windows users often use \lstinline|WinEDT|.
+
+The perfect edit-process cycle goes like this:
+\begin{enumerate}
+\item Create a \LaTeXe{} source file, and any others needed, such as a
+  \BibTeX{} file, figures, and so on.
+\item Run \lstinline|pdflatex|.  (This creates PDF output with
+  place-holders for missing information and auxiliary files with
+  information about the table of contents, cross references, name of
+  file(s) containing the bibliographic database, and so on.)
+\item Run \BibTeX.  (This creates a file containing the references.)
+\item Run \lstinline|pdflatex|.  (This recreates PDF output with
+  place-holders for missing information and auxiliary files with
+  information about the table of contents, cross references, name of
+  file(s) containing the bibliographic database, and so on, but this
+  time also with bibliographic citations.)
+\item Run \lstinline|pdflatex|. (This will create PDF output which is
+  complete.)
+\end{enumerate}
+Imperfections in this cycle creep in when you make errors in the
+files, add new citations, and so on.  Further recompilation is
+necessary; rerunning \BibTeX{} is only necessary if new citations are
+inserted or if an entry in the bibliographic database changes.
+
+Tools such as AUC\TeX{}/ \lstinline|emacs| and \lstinline|WinEDT| can
+manage the process for you.
+
+A brief guide to using \LaTeXe{} on (some of) the department's systems
+is given in \autoref{cha:deptfac}.
+
+
+\setpartpreamble{%
+  \vspace*{4ex}
+  
+  In this part of the document I briefly review some of the main
+  concepts of \LaTeXe\ documents.
+  
+  This is \emph{not} a comprehensive guide to \LaTeXe, but a list of
+  useful concepts, together with a few hints and tips. Consult the
+  main references for full details.
+
+}
+
+\cleardoublepage
+\part{Concepts of \LaTeXe}
+\label{sec:middle}
+\thispagestyle{empty}\cleardoublepage
+
+\chapter{The anatomy of a \LaTeXe\ source file}
+\label{cha:anatomy}
+
+The layout of a normal \LaTeXe\ document description is given in
+\autoref{lst:anatomy}.
+\begin{lstlisting}[%
+  caption={The anatomy of a \LaTeXe\ file},%
+  label=lst:anatomy,%
+  float,%
+  morekeywords={document,maketitle},%
+  numbers=left%
+  ]
+  \documentclass[class options]{class name}
+    preamble (definitions and declarations)
+  \begin{document} % this is a comment, from the `%' to the `<cr>'.
+    \maketitle % to generate the title information
+    body 
+  \end{document}
+\end{lstlisting}
+
+On Line~1 is the \emph{document class declaration}.  This declares the
+class to which the document belongs, as the mandatory parameter to the
+\lstinline|documentclass| command; mandatory parameters appear in
+curly braces.  Most classes have optional parameters; these are passed
+in the square brackets.  Optional parameters for most commands appear
+in an unusual position when they do appear: between the command name
+and the mandatory parameters.
+
+Next (represented by Line~2 of \autoref{lst:anatomy}) is the preamble,
+which contains further definitions and declarations for the document.
+This can stretch over many lines.  Usually there is a great deal of
+freedom about what can appear here; the class \lstinline|UoYCSproject|
+is very restricted, and introduces a separate mechanism for private
+declarations (see \autoref{cha:UoYCSproject}).
+
+The document body is delimited by the markers on Line~3 and Line~5.
+In between goes the document structured into (optional parts,)
+chapters, sections, subsections and so on, represented here by Line~4.
+
+\cleardoublepage
+\chapter{Definitions and Declarations}
+\label{cha:dand}
+
+
+\section{Declarations}
+\label{sec:declarations}
+
+Declarations are easiest to deal with, so we describe them first.
+There are two kinds: individual items and packages of related items.
+
+
+\subsection{Individual declarations}
+\label{sec:individualdeclarations}
+
+Most classes and packages allow or mandate features of the document to
+be set by declaration.  The syntax is a command that names the
+declaration and a parameter that gives the value.  For example, all
+classes that have a title have a declaration to set it: see
+\autoref{lst:title}.
+\begin{lstlisting}[float,caption={Declaring title matter},label={lst:title}]
+  \title{text}
+  \author{name 1 \and name 2 \and name 3}
+  \date{text}
+\end{lstlisting}
+Along with the title usually goes an author (or authors) and an
+optional date (if not given, the date defaults to the date the file is
+processed); again see \autoref{lst:title}.
+
+Some classes, such as \lstinline|UoYCSproject|, have a larger
+collection of declarations.  (The declarations made available by
+\lstinline|UoYCSproject| are given in
+\autoref{tab:UoYCSpdeclarations}.)
+
+
+\subsection{Package loading}
+\label{sec:packages}
+
+Often a document contains structures that are orthogonal to the
+document structure.  A common example in computer science projects is
+a code listing.  A \emph{package} is a collection of definitions that
+supports marking up the structures.  The \lstinline|listings| package
+is recommended for marking up code fragments (that package has been
+used for the fragments of \LaTeXe\ code in this document).
+
+Note that \lstinline{UoYCSproject} provides a different, non-standard,
+place for you to load packages.  See \autoref{sec:uoycsp:diy}.
+
+Packages are loaded with the command
+\lstinline|\usepackage{package name}|.
+An example is given in \autoref{lst:package}
+\begin{lstlisting}[
+  float,
+  caption={Loading a package},
+  label={lst:package}
+  ]
+  \usepackage{listings} % for pretty printed code listings
+\end{lstlisting}
+They often have large numbers of optional parameters, and associated
+declarations to control their behaviour.  The description should be
+given in the package documentation.
+
+There are very many packages available; see examples given in
+\autoref{cha:usefulrefs} and \autoref{cha:usefulpackages} and the web
+site \url{http://www.tex.ac.uk/tex-archive/help/Catalogue/}.
+
+\section{Definitions}
+\label{sec:definitions}
+
+It is the ability to make definitions that gives \LaTeXe\ its real
+power.  Commands can be defined to express the logical structure of
+the concepts in your project, and these can be separated from their
+mark-up.
+
+Note that \lstinline{UoYCSproject} provides a different, non-standard,
+place for you to load packages.  See \autoref{sec:uoycsp:diy}.
+
+There are two kinds of definitions: commands and environments.
+
+
+\subsection{Commands}
+\label{sec:commands}
+
+New commands are declared with the \lstinline|\newcommand| or
+\lstinline|\newcommand*| command.
+
+The simplest use is when you have a long phrase that you need to type
+regularly, and you wish to save yourself some keystrokes and/or ensure
+consistency between occurrences.  An example is given in
+\autoref{lst:newcommanduoy}.
+\begin{lstlisting}[%
+  float,%
+  caption={A new command without parameters},%
+  label={lst:newcommanduoy}]
+  \newcommand*{\uoy}{The University of York}
+\end{lstlisting}
+Anywhere that `\lstinline|\uoy|' occurs in the scope of the definition
+the text `The University of York' is substituted.  The definition is
+designed to be used in a \emph{text mode} rather than a \emph{math
+  mode} (see \autoref{sec:modes}).\footnote{If called in a math mode
+  the result is `$The University of York$'!}
+
+Commands can also have parameters; and this is where the two forms of
+definition differ from each other.  \lstinline|\newcommand*| defines a
+command whose parameters may \emph{not} include paragraph breaks
+(`short' parameters in \TeX\ parlance); \lstinline|\newcommand|
+defines a command whose parameters \emph{may} include paragraph breaks
+(`long' parameters in \TeX\ parlance).  The `starred' form is almost
+always the appropriate one.
+
+As an example, \autoref{lst:newcommandmsg} shows how to define a
+command, called \lstinline|\msg|, to typeset a message in a protocol;
+the message has three parts: sender, intended recipient and body.  The
+command is to be used in a math mode, and later we define an
+environment for whole protocols.
+
+The optional parameter following the name of the command being defined
+is the number of parameters (maximum: 9) that the command has; these
+parameters are called \lstinline|#1|, \lstinline|#2| and
+\lstinline|#3|.
+\begin{lstlisting}[%
+  float,%
+  caption={A new command with parameters},%
+  label={lst:newcommandmsg}%
+  ]
+  \newcommand*{\msg}[3]{#1\rightarrow#2:#3}
+\end{lstlisting}
+As an example of its use, `$A\rightarrow B:M,K(A,B,N)$' may be typeset
+by the call `\lstinline|\msg{A}{B}{M,K(A,B,N)}|'.
+
+Now suppose that you wish to change the printed format of a message
+everywhere in the document: all you need to do is to modify the body
+of the definition.  Alternative definitions are given in
+\autoref{lst:newcommandmsg2} and \autoref{lst:newcommandmsg3}.
+\begin{lstlisting}[%
+  float,%
+  caption={A second new command with parameters},%
+  label={lst:newcommandmsg2}%
+  ]
+  \newcommand*{\msg}[3]{%
+    #2\Longleftarrow\left[#3\right]\Longleftarrow#1}
+\end{lstlisting}
+\begin{lstlisting}[%
+  float,%
+  caption={A third new command with parameters},%
+  label={lst:newcommandmsg3}%
+  ]
+  \newcommand*{\msg}[3]{
+    \begin{array}{@{}c@{}}
+         #1
+      \\ \bigtriangledown
+      \\ #3
+      \\ \bigtriangledown
+      \\ #2
+    \end{array}
+  }
+\end{lstlisting}
+The second definition of \lstinline|\msg| typesets the call
+`\lstinline|\msg{A}{B}{M,K(A,B,N)}|' as
+\begin{displaymath}
+B\Longleftarrow\left[M,K(A,B,N)\right]\Longleftarrow A
+\end{displaymath}
+while the third typesets it as
+\begin{displaymath}
+\begin{array}{@{}c@{}}A\\\bigtriangledown\\M,K(A,B,N)\\\bigtriangledown\\B\end{array}
+\end{displaymath}
+
+The \lstinline|\newcommand| commands will report an error if the
+command name is already defined (possibly in the environment).  You
+can \emph{redefine} a command by using \lstinline|\renewcommand| and
+\lstinline|\renewcommand*|.  There are other subtle variations on
+command definition, including the ability define commands with one
+optional parameter.  For these, see a standard book on \LaTeXe, such
+as those listed in \autoref{sec:books}.\footnote{The underlying \TeX\
+  definition mechanism is extremely powerful, allowing a much greater
+  flexibility in the syntax of introduced commands.  See
+  \citet{Knuth1984}.}
+
+\subsection{Environments}
+\label{sec:environments}
+
+An \emph{environment} is used to group together a structure.  An
+instance of environment \lstinline|e| begins with
+\lstinline|\begin{e}| and ends with \lstinline|\end{e}|.
+
+For example, there are predefined environments for various types of
+lists (see \autoref{lst:listex}), for quotations (see
+\autoref{lst:quoteex}; note the use of a comment to break a long word
+and hide the new-line character and the use of \lstinline|\-| to state
+additional places where hyphenation is allowed; this example is
+typeset in \autoref{cha:quoteex}), and for arranging formul\ae\ (the
+\lstinline|array| environment in \autoref{lst:newcommandmsg3}).
+\begin{lstlisting}[
+  float,
+  caption={An example of a bulleted list},
+  label={lst:listex}
+  ]
+  \begin{itemize}
+  \item The first bullet point.
+  \item And now the second.
+  \item Followed by a third.
+  \end{itemize}
+\end{lstlisting}
+\lstinputlisting[
+  float,
+  caption={An example of quotations},
+  label={lst:quoteex},
+  basicstyle=\sffamily\small
+  ]{joyce.tex}
+
+Declaring an environment is very like making a definition, except that
+now we have to give code for the start and the end of the environment.
+In \autoref{lst:mqex} I show how to define an environment that behaves
+like the \lstinline|quote| environment, except that the font used is
+small and italic.  It also takes one parameter, a citation label,
+which causes the citation to be printed at the bottom right hand side
+of the quote, preceded by an em-dash.
+\begin{lstlisting}[
+  float,
+  caption={A new quote environment},
+  label={lst:mqex}
+  ]
+  \newenvironment*{mq}[1]
+    {\begin{quote}\small\itshape\newcommand*{\cl}{#1}}% begin code
+    {\par\hspace*{\fill}---\citep{\cl}\end{quote}}% end code
+\end{lstlisting}
+The command used to define the environment is
+\lstinline|\newenvironment*| (there is also an un-starred version, as
+well as `renew' versions).  The environment's name is \lstinline|mq|.
+It has one parameter.  Next comes the code to be executed at the start
+of the environment: begin a quote environment, set the font size to
+small and its shape to italic, and finally store the parameter value
+in the macro definition \lstinline|\cl| (the parameter is only
+accessible as \lstinline|#1| in the begin code).  Last comes the code
+executed at the end of the environment: force a paragraph break,
+produce just enough white space so that the citation is
+right-justified, an em-dash and then the citation itself.
+
+As a second example, consider the \lstinline|\msg| command, to typeset
+one message in a protocol.  The protocol itself is best captured as a
+list of messages.  To do this we define an environment, yet another
+version of \lstinline|\msg| and a `and then do' command; these are
+given in \autoref{lst:protocolex}.
+\begin{lstlisting}[
+  float,
+  caption={An environment and a command to typeset protocols},
+  label={lst:protocolex}
+  ]
+  \newcounter{msgnumber}
+  \newenvironment*{protocol}
+  { % begin code
+    \setcounter{msgnumber}{0}%
+    \newcommand*{\msg}[3]{%
+      \refstepcounter{msgnumber}\themsgnumber&##1&##2&##3}
+    \newcommand*{\next}{\\}
+    \begin{math}\displaystyle%
+      \begin{array}{r@{.\quad}l@{\rightarrow}l@{\;:\;}l}%
+  }
+  { % end code
+      \end{array}%
+    \end{math}%
+  }
+\end{lstlisting}
+\newcommand{\enc}[2]{\{#2\}_{#1}}
+
+Note that the definitions of the commands are made local to the
+environment and cannot be accessed outside it (the counter declaration
+must, alas, be global).  Because the definition of \lstinline|\msg| is
+nested one level deep its parameters have names that start with
+\emph{two} hashes, \lstinline|##1| and so on.
+
+An example of their use is given in \autoref{lst:OtwayRees} (This
+protocol is due to \citet{OtwayRees1987}; the notation $\enc{K}{M}$,
+marked up as \lstinline|\enc{K}{M}|, means the encryption of $M$ under
+symmetric key $K$).
+\begin{lstlisting}[
+  float,
+  caption={Markup for the Otway-Rees protocol},
+  label={lst:OtwayRees}
+  ]
+  \begin{protocol}
+    \msg{A}{B}{M,A,B,\enc{K_{AS}}{N_{A},M,A,B}}
+    \next
+    \msg{B}{S}{M,A,B,\enc{K_{AS}}{N_{A},M,A,B},%
+                     \enc{K_{BS}}{N_{B},M,A,B}}
+    \next
+    \msg{S}{B}{M,\enc{K_{AS}}{N_{A},K_{AB}},%
+                 \enc{K_{BS}}{N_{B},K_{AB}}}
+    \next
+    \msg{B}{A}{M,\enc{K_{AS}}{N_{A},K_{AB}}}
+  \end{protocol}
+\end{lstlisting}
+The typeset version is
+\hyperref[thm:otwayrees]{Protocol~\ref*{thm:otwayrees}} on
+Page~\pageref{thm:otwayrees}.
+
+\cleardoublepage
+\chapter{The body of the document}
+\label{cha:body}
+
+
+\section{The anatomy of the body}
+\label{sec:bodyanatomy}
+
+The body of the document has a structure given in
+\autoref{lst:bodyanatomy}.
+\begin{lstlisting}[
+  float,
+  caption={The anatomy of the body in \lstinline|UoYCSproject|},
+  label={lst:bodyanatomy},
+  morekeywords={listoffigures,listoftables,part,chapter,subsection,subsubsection,paragraph,subparagraph,appendix},
+  basicstyle=\small
+  ]
+  % FRONT MATTER
+  \listoffigures % Optional.  Generates a list of figures in the document.
+  \listoftables  % Optional.  Generates a list of tables in the document.
+  % Optional.  Other list-generating commands specific to your document.
+  %            (For example, the listings package has a command
+  %             \lstlistoflistings to produce a list of code listings.)
+  % MAIN MATTER
+  \part{title} % Repeat as often as necessary, perhaps zero times.
+  \chapter{title} % Repeat as often as necessary, but at least once.
+  \section{title} % Repeat as often as necessary, perhaps zero times.
+  \subsection{title}% Repeat as often as necessary, perhaps zero times.
+  \subsubsection{title}% Repeat as often as necessary, perhaps zero times.
+  \paragraph{title}% Repeat as often as necessary, perhaps zero times.
+  \subparagraph{title}% Repeat as often as necessary, perhaps zero times.
+  % BACK MATTER
+  \bibliography{file1,file2} % Construct bibliography from databases in
+                             % `file1.bib' and `file2.bib'.
+  \appendix % remaining chapters to be numbered as appendices
+  \chapter{title} % Repeat as often as necessary, perhaps zero times.
+  \section{title} % Repeat as often as necessary, perhaps zero times.
+  \subsection{title} % Repeat as often as necessary, perhaps zero times.
+  \subsubsection{title} % Repeat as often as necessary, perhaps zero times.
+  \paragraph{title} % Repeat as often as necessary, perhaps zero times.
+  \subparagraph{title} % Repeat as often as necessary, perhaps zero times.
+\end{lstlisting}
+
+There are usually three parts to a report:
+\begin{description}
+\item[Front matter] The title page, dedication, acknowledgements,
+  abstract, tables of contents and so on.
+  
+  Most of this is taken care of automatically by the
+  \lstinline|UoYCSproject| class (as long as you provide the
+  declarations).  However, there are some optional features of the
+  document (such as figures and tables) whose use cannot be detected.
+  If you do use them you should indicate this by asking for the
+  appropriate lists to be included.
+\item[Main matter] The content of the document, appropriately
+  structured.
+  
+  In \lstinline|UoYCSproject| the document is structured into
+  chapters, with, optionally, a coarser structuring into parts (other
+  classes have other rules).  The chapters can be structured into
+  sections, the sections into subsections, and so on, using the
+  commands given in \autoref{lst:bodyanatomy}.  You should not miss
+  out a level of headings.  Note that \lstinline|\paragraph| and
+  \lstinline|\subparagraph| are historical names that refer to titled
+  sectional units, not to a coherent collection of sentences; a
+  sectional (sub-)paragraph may well be composed of several coherent
+  collections of sentences.
+  
+  Sections are numbered, and copied to the table of contents, as low
+  as subsections. (If you really want to change the depth of the table
+  of contents you can, although it is \emph{deprecated}, by altering
+  the value of the \lstinline|tocdepth| counter.  For example,
+  \lstinline|\setcounter{tocdepth}{3}| would cause sub-subsections to
+  be numbered.  In the \lstinline|UoYCSproject| class you should do
+  this in the local definitions file.)
+  
+  Sometimes a title will be too long for the table of contents or the
+  running headings.  A shorter, optional, title can be given to the
+  command; the short title is used instead of the long one in both the
+  table of contents and the running headings.  For example, see
+  \autoref{lst:shorttitle}.
+  \begin{lstlisting}[
+    float,
+    caption={A sectional unit with an optional short title},
+    label={lst:shorttitle},
+    gobble={4}
+    ]
+    \chapter[The truth]{An accurate, complete and  verisimilitudinous %
+      account of the happenings that occurred at that time and place}
+  \end{lstlisting}
+\item[Back matter] The references and appendices.
+
+  Appendices are just chapters, although they will be numbered
+  differently.
+  
+  There are various means of producing a bibliography or list of
+  references.  The best way is through \BibTeX, a format for
+  bibliographic databases that is integrated with \LaTeXe.
+\end{description}
+
+Not mentioned in \autoref{lst:bodyanatomy} are other parts of
+documents usually found in the front or back matter, such as
+glossaries and an index.  \LaTeXe\ has facilities to produce both of
+these.  Only a glossary is worth including in a project report, and is
+usually small enough to be done by hand as an appendix.  A good index
+is very hard to produce, and not worth the trouble for a project
+report (until you turn it into a book, that is!).
+
+\section{Splitting the document up}
+\label{sec:splitting}
+
+Sometimes it is convenient to break a document into pieces.  \LaTeXe\
+provides two mechanisms for doing this.
+
+The command \lstinline|\input{<file>}| searches for a file called
+`\textless file\textgreater.tex' and includes it.  The effect is as if
+the file was typed in place.
+
+The command \lstinline|\include{<file>}| searches for a file
+called `\textless file\textgreater.tex' and includes it.  The file
+should contain a complete chapter, and must start a new page.  The
+\lstinline|\includeonly| command can be used to selectively process
+chapters, speeding up processing time in the drafting phase.  Page
+ranges and labels from the last run of missing chapters are taken
+account of by this mechanism, so a small edit to one chapter may mean
+only re-processing that chapter.  See the standard documentation.
+
+\section{Text elements}
+\label{sec:textelements}
+
+
+\subsection{Modes}
+\label{sec:modes}
+
+\LaTeXe\ text is processed in various \emph{modes}.  The same input
+will give different results in each mode.  The modes include:
+\begin{description}
+\item[paragraph] for ordinary text,
+\item[left-to-right] for text that will not be broken across lines,
+\item[math] for mathematics (actually there are two variants, in-line
+  and displayed), and
+\item[picture] for drawing simple pictures.
+\end{description}
+It is rare to be caught out by the wrong mode, as \LaTeXe\ usually
+switches automatically when necessary, and most of the time you can
+forget about modes.  The most common mistake is to use a command in a
+text mode that only makes sense in math mode, when \LaTeXe\ will
+report an error.  The reverse mistake ---to place text in a math
+mode--- results in ugly output; see \autoref{fig:textasmath}.
+\begin{figure}[tbp]
+  \begin{center}
+    \newcommand*{\phrase}{%
+      Here is some text incorrectly placed in math mode --- note how %
+      different it is from paragraph mode%
+    }
+    \fbox{\parbox{0.95\textwidth}{\phrase:\\\begin{math}\phrase\end{math}.}}
+  \end{center}
+  \caption{The result of treating text as mathematics}
+  \label{fig:textasmath}
+\end{figure}
+
+\subsection{Simple paragraphs}
+\label{sec:simpleparas}
+
+A paragraph (in the sense of a coherent collection of sentences and
+not in the sense of a sectional unit) is just a block of text.
+Paragraphs are separated by blank lines (that is, sequences of at
+least two new line characters).  Words in a paragraph are separated by
+sequences of spaces and at most one newline.  See
+\autoref{lst:quoteex}, where the first quotation consists of three
+paragraphs.
+
+Where necessary a paragraph break can be forced by a \lstinline|\par|
+command.  The indentation on the first line of a paragraph can be
+suppressed by beginning the paragraph with a \lstinline|\noindent|
+command.
+
+\subsection{Characters}
+\label{sec:characters}
+
+\subsubsection{Reserved characters}
+\label{sec:reserved}
+
+There are some characters which are reserved and may not be used in
+text.  These are listed in \autoref{tab:forbidden}, together with how
+to make them if you really need them.
+\begin{table}[tbp]
+  \centering
+  {\small
+    \begin{tabular}{*{10}{|c}|}
+      \hline
+      \#&\$&\%&\&&\textasciitilde&\_&\^{}&\textbackslash&$\{$&$\}$
+      \\\hline
+      \lstinline|\#|&\lstinline|\$|&\lstinline|\%|
+      &\lstinline|\&|&\lstinline|\textasciitilde|
+      &\lstinline|\_|&\lstinline|\^{}|
+      &\lstinline|\textbackslash|&\lstinline|\{|&\lstinline|\}|
+      \\\hline
+    \end{tabular}
+    }
+  \caption[Reserved characters and how to make them]{Reserved
+    characters and how to make them.  Note that the two braces are
+    only defined in math mode.}
+  \label{tab:forbidden}
+  \rule{\textwidth}{1pt}
+\end{table}
+
+
+\subsubsection{Ellipses}
+\label{sec:ellipses}
+
+Sometimes you will need to show that words have been left out of a
+quotation.  This is done by a mark called an \emph{ellipsis} `\ldots';
+it can be made by the `low dots' command \lstinline|\ldots|.  The
+output of \lstinline|\ldots| is not the same as three full stops:
+compare a\ldots to...z.  It is bad style to let a sentence trail off
+with an ellipsis\ldots
+
+For mathematics, centred dots (\lstinline|\cdots|) look better:
+$1+\frac{1}{2}+\cdots+\frac{1}{2^n}+\cdots+\frac{1}{256}$.  (Some
+people think that $\sum_{n=0}^{8}\frac{1}{2^{n}}$ looks even better.)
+
+A vertical ellipsis can be made with \lstinline|\vdots|; an example of
+its use can be seen in \autoref{sec:bibliographies}.
+
+\subsubsection{Dashes}
+\label{sec:dashes}
+
+Another class of characters that sometimes causes confusion are the
+various dashes.  See \autoref{tab:dash}.
+\begin{table}[tbp]
+  \centering
+  \newcommand{\hding}[1]{\multicolumn{1}{c}{\textbf{#1}}}
+  \begin{tabular}{lcllp{0.3\textwidth}}
+    \hding{Name}&\hding{Character}&\hding{Mark-up}&\hding{Mode}&\hding{Comment}
+    \\
+    Hyphen&-&\lstinline|-|&Text&To join two words, as in `Kraft-Ebbing'.
+    \\
+    en-dash&--&\lstinline|--|&Text&To form a range, as in `The
+    period 1997--2003'.
+    \\
+    em-dash&---&\lstinline|---|&Text&To separate two phrases --- or use as
+    parenthesis brackets.
+    \\
+    Minus sign&$-$&\lstinline|-|&Math&To indicate subtraction, as in
+    `$2003-1997$'.
+  \end{tabular}
+  \caption{Dashes and their use}
+  \label{tab:dash}
+  \rule{\textwidth}{1pt}
+\end{table}
+
+Many, many special characters and symbols are available.  Some are
+available automatically, some are parts of packages that you will need
+to load explicitly.  See `The Comprehensive \LaTeX\ Symbol List'.
+
+\subsubsection{Spaces}
+\label{sec:spaces}
+
+\lstset{showspaces={true}}
+
+
+
+Spaces are a special case (in this section space characters are
+typeset thus: `\lstinline| |').  There are three kinds:
+\begin{enumerate}
+\item `\lstinline| |'\quad An ordinary space (or a non-empty sequence
+  of spaces). May be printed as an inter-word space, an inter-sentence
+  space or a newline.  Under certain circumstances (for example, in a
+  math mode or immediately following a command) it may be ignored.
+
+  Most of the time you should use ordinary spaces to separate items.
+\item `\lstinline|~|'\quad A \emph{tie}.  It will
+  never be replaced by anything other than an inter-word space.
+  
+  Ties should be used whenever you want to suppress a line-break.  In
+  particular, they should be used in constructs such as
+  \lstinline|Mr~Smith|, \lstinline|Hypothesis~C|, and so on.
+\item `\lstinline|\ |' A hard space.  It may be replaced by an
+  inter-word space or a newline.  It may not be ignored.
+
+  Hard spaces are useful when you want to force a new line, and \TeX\
+  does not think it is building a line: use \lstinline|\ \newline|.
+  
+  A hard space is used to protect an inter-word space immediately
+  following a command name.  For example `\lstinline|\TeX is useful|'
+  typesets as `\TeX is useful', while `\lstinline|\TeX\ is useful|'
+  typesets as `\TeX\ is useful'.  (An alternative method is to place
+  an empty pair of braces after the command, for example
+  `\lstinline|\TeX{} is useful|'; this has the advantage that it works
+  no matter what the following character, for example
+  `\lstinline|\TeX{}: useful!|'.)
+  
+  Their other use is to prevent \LaTeXe\ from thinking it is at a
+  sentence end when it is not.  \LaTeXe\ (because \TeX\ does) treats a
+  space as an inter-sentence space if it is preceded by a
+  non-uppercase character and a full-stop.  This can happen with
+  abbreviations, e.\ g.\ `etc.'.  (Compare the spaces after the `e.'
+  and the `g.' with the inter-word and inter-sentence space on the
+  same line.)
+\end{enumerate}
+
+\lstset{showspaces={false}}
+
+\subsubsection{Character attributes}
+\label{sec:cahrattributes}
+
+It is possible to vary the series, shape, family, size and colour of
+\emph{text} fonts (see the references for the attributes for
+mathematical fonts).  This is \emph{deprecated} in the text, but
+recommended in the implementation of abstract syntax.  See
+\autoref{tab:fontstyle}.
+\begin{table}[tbp]
+  \centering
+  \begin{tabular}{lll}
+      Series&\lstinline|\mdseries|&\normalfont\mdseries Medium Series
+    \\      &\lstinline|\bfseries|&\normalfont\bfseries Boldface Series
+    \\Family&\lstinline|\rmfamily|&\normalfont\rmfamily Roman Family
+    \\      &\lstinline|\sffamily|&\normalfont\sffamily San Serif Family
+    \\      &\lstinline|\ttfamily|&\normalfont\ttfamily Typewriter Family
+    \\Shape &\lstinline|\upshape| &\normalfont\upshape  Upright Shape
+    \\      &\lstinline|\itshape| &\normalfont\itshape  Italic Shape
+    \\      &\lstinline|\slshape| &\normalfont\slshape  Slanted Shape
+    \\      &\lstinline|\scshape| &\normalfont\scshape  Small Caps Shape
+  \end{tabular}
+  \caption{Font attribute declarations}
+  \label{tab:fontstyle}
+\end{table}
+There is also a \lstinline|\normalfont| declaration when all else
+fails.
+
+To each font declaration there is a command, of the form
+\lstinline|\textXX{text}|, where the \lstinline|XX| should be replaced
+by the first two letters of the corresponding declaration: for
+example, `\lstinline|\textsc{text}|' produces `\textsc{Text}'.  The
+exception to the rule is `\lstinline|\textnormal{text}|'.
+
+Font size is controlled by the declarations given in
+\autoref{tab:fontsize}.  (Not all font sizes may be available;
+if not available something close will be chosen.)
+\begin{table}[tbp]
+  \newcommand{\fs}[1]{\csname#1\endcsname abcXYZ}
+  \centering
+  \begin{tabular}{llll}
+    \lstinline|\tiny|&\lstinline|\scriptsize|&\lstinline|\footnotesize|&\lstinline|\small|
+    \\
+    \fs{tiny}&\fs{scriptsize}&\fs{footnotesize}&\fs{small}
+    \\[1ex]
+    \lstinline|\normalsize|&\lstinline|\large|&\lstinline|\Large|&\lstinline|\LARGE|
+    \\
+    \fs{normalsize}&\fs{large}&\fs{Large}&\fs{LARGE}
+    \\[1ex]
+    \lstinline|\huge|&&\lstinline|\Huge|&
+    \\
+    \multicolumn{2}{l}{\fs{huge}}&\multicolumn{2}{l}{\fs{Huge}}
+  \end{tabular}
+  \caption{Font size declarations}
+  \label{tab:fontsize}
+  \rule{\textwidth}{1pt}
+\end{table}
+
+To change colours you need to load the \lstinline|color| package.  You
+get a declaration, \lstinline|\color{colour}| and its associated
+command \lstinline|\textcolor{colour}{text}|.  You also get coloured
+backgrounds and framed boxes.  A few colours
+({\newcommand{\tc}[1]{\textcolor{#1}{#1}}\tc{red}, \tc{blue},
+  \tc{green}, \tc{cyan}, \colorbox{black}{\tc{yellow}}, \tc{magenta},
+  \tc{black}, \colorbox{black}{\tc{white}}}) are pre-defined; you must
+define others yourself.  \emph{The use of colour is deprecated: if you
+  must use it, do so very, very carefully.}
+
+\subsection{Emphasised text}
+\label{sec:emphasis}
+
+Emphasised text should be marked up logically, using
+\lstinline|\emph|.  The command is context dependent and can be
+nested.  For example,\footnote{The first sentence of
+  \href{http://www.cs.utexas.edu/users/EWD/ewd04xx/EWD498.PDF}{EWD498},
+  but with my emphasis!}
+\begin{quote}
+  \lstinline[basicstyle=\sffamily\small]|\textnormal{Sometimes \emph{we \emph{discover} unpleasant} truths.}|
+\end{quote}
+typesets as
+\begin{quote}\normalfont
+  Sometimes \emph{we \emph{discover} unpleasant} truths.
+\end{quote}
+
+Use of \lstinline|\textit{...}| or \lstinline|\itshape| to simulate
+the same effect is deprecated.
+
+\subsection{Lists}
+\label{sec:lists}
+
+\LaTeXe\ has three kinds of lists available:
+\begin{description}
+\item[bulleted] made with the \lstinline|itemize| environment,
+\item[numbered] made with the \lstinline|enumerate| environment, and
+\item[labelled] made with the \lstinline|description| environment
+  (this list is an example of the \lstinline|description|
+  environment).
+\end{description}
+Each has a similar format.  Individual items are introduced by
+\lstinline|\item|; in the case of the \lstinline|description|
+environment the \lstinline|\item| command has an `optional' parameter
+for the label (which \emph{must} be present).  \LaTeXe\ changes the
+numbering and bulleting styles for sub-lists, to a reasonable depth
+(if you exceed this it probably means you have a poorly structured
+document).  See \autoref{lst:lists}.
+\begin{lstlisting}[
+  float,
+  caption={Examples of lists},
+  label={lst:lists}
+  ]
+  \begin{description}
+  \item[Thing One] likes
+    \begin{enumerate}
+    \item Green Eggs and
+    \item Ham
+    \end{enumerate}
+  \item[Thing Two] has never seen either
+    \begin{itemize}
+    \item a Star-Bellied Sneetch or
+    \item a Lorax.
+    \end{itemize}
+  \end{description}
+\end{lstlisting}
+
+It is possible to define your own list structures, and this is a
+common way of building an abstract syntax for a document-specific
+structure (for example, a variant of the enumerated list would have
+been a good way to build a protocol display).  See a standard
+reference (\autoref{sec:books}).
+
+
+\subsection{Quotations}
+\label{sec:quotations}
+
+
+\subsubsection{In-line quotations}
+
+A running quotation in text must be surrounded by quote marks.  There
+are two kinds, double and single.  Opening single quotes are made with
+the ``\texttt{`}'' character, and the corresponding close quote is
+made with the ``\texttt{'}'' character.  Double quotes are made with
+\emph{pairs} of single quotes: ``\texttt{``}'' and ``\texttt{''}'';
+the double-quote character ``\verb|"|'' is never
+used.\footnote{Actually, it is used.  One use is in the sentence to
+  which this footnote is attached.  Another use is in code listings
+  for programming languages that, for example, use the character to
+  delimit strings.  It is also the name of the command that produces
+  the `\"{ }' accent in words such as `co\"{o}rdinate'; accents are
+  not discussed in this document.}
+
+\subsubsection{Displayed quotations}
+
+There are two kinds of displayed quotation:
+\begin{enumerate}
+\item the \lstinline|quote| environment, and
+\item the \lstinline|quotation| environment.
+\end{enumerate}
+The two environments are very similar.  The \lstinline|quote|
+environment is recommended for short quotes and the
+\lstinline|quotation| environment for long quotes.  Both are
+illustrated in \autoref{lst:quoteex}.
+
+\subsubsection{WARNINGS}
+\newcommand{\beware}{\marginpar[\textcolor{red}{\textsc{Beware}
+    $\Rightarrow$}]{\textcolor{red}{$\Leftarrow$ \textsc{Beware}}}}
+\begin{itemize}
+\item Neither of the displayed quotation environments adds quotation
+  marks.\beware
+  
+  Check the Student Handbook to find out if we currently require
+  quotation marks around displayed quotes.  If they are required you
+  will need to add them manually.
+\item Departmental rules require a citation with all quotes.  \beware
+  These must be supplied manually.  See \autoref{lst:quoteex} and
+  \autoref{lst:mqex} for examples.
+\end{itemize}
+
+\subsection{Bibliographies}
+\label{sec:bibliographies}
+
+Various packages have been written to enhance the presentation of
+bibliographies and citations.  The \lstinline{UoYCSproject} class
+loads the \lstinline{natbib} style and sets up citations to follow the
+Departmental approved style (IEEE).  The \lstinline{UoYCSproject}
+class also fixes the bibliography style for the approved departmental
+style.
+
+Lists of references can be generated from a database in \BibTeX\
+format.  This is a flat text file.  The documentation for the IEEEtran
+\BibTeX{} styles \cite{Shell2008} will tell you how to format this
+file.  The references for this document are an example.  Each entry
+has the following layout:
+\begin{quote}
+  \sffamily
+  \begin{tabular}{l}
+    @Entry\_Type$\{$Label,\\
+    \begin{tabular}{rcl}
+      Field\textsubscript{0} &=& $\{$Value\textsubscript{0}$\}$,\\
+      Field\textsubscript{1} &=& $\{$Value\textsubscript{1}$\}$,\\
+      &\vdots&\\
+      Field\textsubscript{n} &=& $\{$Value\textsubscript{n}$\}$
+    \end{tabular}\\
+    $\}$
+  \end{tabular}
+\end{quote}
+There are many different entry types and each type has a different
+array of compulsory and optional fields.  There are two features of
+\BibTeX{} that cause problems when preparing the bibliographic
+database: see \autoref{sec:BibTeXgotchas}.
+
+Citations are of two types, parenthesized and textual.  If
+\lstinline|Joyce:FW| is a label associated with the record for James
+Joyce's \emph{Finnegans Wake} then
+\begin{description}
+\item[Parenthesized] 
+  \begin{tabular}[t]{l@{~\textrm{generates}~}l}
+    \lstinline|\citep{Joyce:FW}|&\citep{Joyce:FW}
+    \\
+    \lstinline|\citep[\S4]{Joyce:FW}|&\citep[\S4]{Joyce:FW}
+    \\
+    \lstinline|\citep[see][\S4]{Joyce:FW}|&\citep[see][\S4]{Joyce:FW}
+  \end{tabular}
+\item[Textual]
+  \begin{tabular}[t]{l@{~\textrm{generates}~}l}
+    \lstinline|\citet{Joyce:FW}|&\citet{Joyce:FW}
+    \\
+    \lstinline|\citet[\S4]{Joyce:FW}|&\citet[\S4]{Joyce:FW}
+    \\
+    \lstinline|\citet[see][\S4]{Joyce:FW}|&\citet[see][\S4]{Joyce:FW}
+  \end{tabular}
+\end{description}
+
+If several citations are applicable they can be included in the same
+citation command, as a comma separated list, without spaces; for
+example:
+`\ldots\lstinline|important modernist works~\citep{Elliot:WL,Joyce:FW}|'
+might produce\\`\ldots important modernist works~[17, 18]'.
+
+The \lstinline|natbib| package provides several other facilities for
+typesetting parts of citations, such as titles; see its documentation.
+
+\subsection{Floats}
+\label{sec:floats}
+
+A \emph{float} is a numbered item, usually with a caption, that can
+`float' around the document and gets a special entry in the front
+matter.  In this document there are three classes of float,
+\emph{tables} (for example, \autoref{tab:UoYCSpdeclarations}),
+\emph{figures} (for example, \autoref{fig:textasmath}) and
+\emph{listings} (for example, \autoref{lst:quoteex}). The contents of
+the item need have no relation to the class of float, although it is
+helpful to the reader if they do!
+
+Control of floats and their positioning is a complex subject, and
+apart from mimicking examples in the source of this document you
+really ought to consult a standard reference (see
+\autoref{sec:books}).
+
+Each float can have a symbolic label for use by \LaTeXe's
+cross-referencing mechanism.
+
+
+\subsection{Tabulating data}
+\label{sec:tabular}
+
+The common thing to find in a table float is a \lstinline|tabular|
+environment.  These are very flexible, and too complex to describe in
+this note.  Simple examples may be seen in \autoref{tab:forbidden} and
+\autoref{tab:UoYCSpdeclarations}.  There are also packages to give
+tabular environments with extra functionality.  See a standard
+reference (\autoref{sec:books}).
+
+\subsection{Theorem-like environments}
+\label{sec:theorems}
+
+\LaTeXe\ allows you to define special series of named and numbered
+paragraphs, called theorem-like environments.  The canonical examples
+are theorems, lemmata and hypotheses.  Theorem-like environments have
+an optional parameter for textually naming the content of the
+environment, in addition to numbering it.
+
+In \autoref{lst:newtheoremex} I define one for numbering protocols.
+My usual habit is to combine a theorem-like environment with an
+ordinary one to get a `close-paragraph' marker; and I have done that
+here.  (A better solution would be to roll the \lstinline|protocol|
+and \lstinline|prot| environments together; I have separated them here
+for illustration.)
+\begin{lstlisting}[
+  float,
+  caption={A theorem-like environment for protocols},
+  label={lst:newtheoremex},
+  morekeywords={ifthenelse}
+  ]
+  \newtheorem{PROTOCOL}{Protocol}
+  \newenvironment{prot}[1][]
+  {\newcommand*{\tmp}{#1}
+    \ifthenelse{\equal{\tmp}{\empty}}
+       {\begin{PROTOCOL}}
+       {\begin{PROTOCOL}[\tmp]\ \newline}
+  }
+  {\newline\hspace*{\fill}
+    \rule{0.666666em}{1.07867788em} % Golden ratio (approx)
+  \end{PROTOCOL}}
+\end{lstlisting}
+As an example here is \autoref{lst:OtwayRees}, typeset using
+\begin{quote}
+\lstinline|\begin{prot}[Otway-Rees]|\ldots\lstinline|\end{prot}|.
+\end{quote}
+
+\newtheorem{PROTOCOL}{Protocol}
+\newenvironment{prot}[1][]
+{\newcommand*{\tmp}{#1}
+  \ifthenelse{\equal{\tmp}{\empty}}
+    {\begin{PROTOCOL}}
+    {\begin{PROTOCOL}[\tmp]\ \newline}
+}
+{   \newline\hspace*{\fill}
+    \rule{0.666666em}{1.07867788em} % Golden ratio (approx)
+  \end{PROTOCOL}
+}
+\newcounter{msgnumber}
+\newenvironment*{protocol}
+{
+  \setcounter{msgnumber}{0}%
+  \newcommand*{\msg}[3]{\refstepcounter{msgnumber}\themsgnumber&##1&##2&##3}
+  \newcommand*{\next}{\\}
+  \begin{math}\displaystyle%
+    \begin{array}{r@{.\quad}l@{\rightarrow}l@{\;:\;}l}%
+}
+{
+    \end{array}%
+  \end{math}%
+}
+
+\begin{prot}[Otway-Rees]\label{thm:otwayrees}
+    \begin{protocol}
+    \msg{A}{B}{M,A,B,\enc{K_{AS}}{N_{A},M,A,B}}
+    \next
+    \msg{B}{S}{M,A,B,\enc{K_{AS}}{N_{A},M,A,B},\enc{K_{BS}}{N_{B},M,A,B}}
+    \next
+    \msg{S}{B}{M,\enc{K_{AS}}{N_{A},K_{AB}},\enc{K_{BS}}{N_{B},K_{AB}}}
+    \next
+    \msg{B}{A}{M,\enc{K_{AS}}{N_{A},K_{AB}}}
+  \end{protocol}
+\end{prot}
+
+
+\subsection{Mathematics}
+\label{sec:mathematics}
+
+\LaTeXe\ has superb type-setting facilities for mathematics (see
+\autoref{fig:mathematics}).  For complex work the
+$\mathcal{A_{\displaystyle \!M\!}S}$\TeX{} packages (developed by the
+American Mathematical Society) will handle everything you could
+possibly need.  Most people only need the basic, pre-loaded \LaTeXe{}
+facilities.\footnote{There is a school of thought that mistakes were
+  made in the basic, pre-loaded \LaTeXe{} facilities, particularly the
+  \lstinline{eqnarray} environment.  The solution proposed by this
+  school is to always load and use the $\mathcal{A_{\displaystyle
+      \!M\!}S}$\TeX{} packages.}
+\begin{figure}[tbp]
+  \begin{displaymath}
+    \int^{1}_{-1}\!\frac{(T_{n}(x))^{2}}{\sqrt{1-x^{2}}}\,dx=\left\{
+        \begin{array}{l@{\;\;\mbox{if}\;\;}l}
+          \pi&n=0
+          \\\pi/2&n\in\mathbb{N}_{1}
+        \end{array}
+      \right.
+  \end{displaymath}
+  \caption[An example of mathematical type-setting]{An example of
+    mathematical type-setting.  (Othogonality in Chebyshev polynomials;
+    $T_{n}$ is the nth Chebyshev polynomial:
+    $T_{n}(x)=\cos(n\cos^{-1}x)$.)}
+  \label{fig:mathematics}
+  \rule{\textwidth}{1pt}
+\end{figure}
+
+In-line mathematics can be produced using the `math-shift'
+construction, \lstinline{$}\ldots\lstinline{$}.  For example,
+\lstinline|$A+B$| produces `$A+B$'.  An alternative is to use the
+\lstinline{math} environment.
+
+Displayed mathematics is made using the \lstinline{displaymath},
+\lstinline{equation}, \lstinline{eqnarray} and \lstinline{eqnarray*}
+environments, depending on the exact effect desired.
+
+The subject is too complex to discuss here, and the standard
+references (\autoref{sec:books}) should be consulted.
+
+
+\subsection{Cross references}
+\label{sec:crossrefs}
+
+\LaTeXe\ has a powerful cross-reference mechanism.  Anything for which
+a number can be generated (parts, chapters, sections, tables, figures,
+theorem-like structures, equations and so on) can have a symbolic
+label.  See \autoref{lst:label}, where a section is given the label
+\lstinline|sec:brief|.
+\begin{lstlisting}[
+  float,
+  caption={An example of a label},
+  label={lst:label}
+  ]
+  \section[Brief titles]{How to avoid tedious prolixity in the titles
+    of sections, when they are printed in the Table of Contents}
+  \label{sec:brief}
+\end{lstlisting}
+
+The section number can be referred to by using
+`\lstinline|\ref{sec:brief}|'.  You can also refer to the page on
+which the section occurs by using the command
+`\lstinline|\pageref{sec:brief}|'. (See the examples in
+\autoref{lst:ref}.)
+\begin{lstlisting}[
+  float,
+  caption={Examples of cross-references},
+  label={lst:ref}
+  ]
+  In Section~\ref{sec:brief}, starting on Page~\pageref{sec:brief}, we
+  see how to do it.
+
+  Sections~\ref{sec:long}--\ref{sec:brief} report this in detail.
+\end{lstlisting}
+
+
+
+The \lstinline|hyperref| package (loaded as part of
+\lstinline|UoYCSproject|) automatically turns references made with
+\lstinline|\ref| and \lstinline|\pageref| into internal links when a
+suitable format is output (for example, PDF).  It also adds three
+further commands:
+\begin{itemize}
+\item \lstinline{\ref*}, which does \emph{not} make the internal
+  hyperlink.
+\item \lstinline{\autoref}, which (sometimes) adds the name of the
+  type of unit; for example the command
+  \lstinline|\autoref{sec:brief}| will generate `section~3.2' (or what
+  ever number it turns out to be).  The \lstinline|hyperref| package
+  makes the whole phrase into an internal link.
+  
+  (If \lstinline|\autoref| causes problems the easiest thing to do is
+  fall back on \lstinline|\ref| and await the bug fixes.)
+\item \lstinline{\nameref}, which typesets the name of the section.
+\end{itemize}
+
+
+\subsection{Pictures}
+\label{sec:pictures}
+
+Pictures in \LaTeXe\ can either be
+\begin{itemize}
+\item drawn within \LaTeXe's native \lstinline|picture| environment
+  (if they are simple)
+\item drawn by a more sophisticated package, such as
+  \lstinline|pgf/tikz| and \lstinline|pdftricks|, or
+\item imported using an external format, using a package such as
+  \lstinline|graphics| (you need to be careful with formats;
+  \lstinline|pdflatex| cannot accept PostScript, Encapsulated or
+  otherwise; PNG or PDF works best\footnote{There is a Linux program
+    to convert from Encapsulated PostScript to PDF,
+    \textsf{epstopdf}.}).
+\end{itemize}
+See the documentation given in \autoref{cha:usefulrefs}.
+
+\cleardoublepage
+\part{The document class UoYCSproject}
+\label{sec:end}
+\thispagestyle{empty}\cleardoublepage
+
+\chapter{The document class UoYCSproject}
+\label{cha:UoYCSproject}
+
+\section{The antecedents of UoYCSproject}
+\label{sec:uoycsp:ante}
+
+The \LaTeXe\ class \lstinline|UoYCSproject| is based on the
+\KOMAScript\ class \lstinline|scrreprt| and so has most of the
+facilities provided by that class.  However some, such as page layout
+and the title declarations, are fixed or redefined.  (For the record,
+the following options are passed to \lstinline|scrreprt|:
+\lstinline|12pt|, \lstinline|a4paper|,
+\lstinline|twoside|\footnote{You must print a document of class
+  \lstinline|UoYCSProjct| double-sided.}, \lstinline|abstracton|,
+\lstinline|pointlessnumbers|, \lstinline|BCOR13mm|.)
+
+The \lstinline|ifthen| package is provided.
+
+\lstinline|UoYCSproject| chooses the font encoding (\lstinline|T1|)
+using the \lstinline|fontenc| package and font sets by packages from
+the PSNFSS bundle \citep{Schmidt2004} (for roman shape: Hermann Zapf's
+Palatino, the University's font, using the \lstinline|mathpazo|
+package; for san serif shape: Helvetica, using the \lstinline|helvet|
+package with a scaling of \lstinline|0.9|; for typewriter shape:
+Courier, using the \lstinline|courier| package), while accessing the
+micro-typographic features of \lstinline|pdfetex| (character protusion
+and font expansion) via the \lstinline|microtype| package.
+
+British English hyphenation and names are set, using the
+\lstinline|babel| package.  (If you need them, \lstinline|babel|
+allows you to include other languages in your document.)
+
+The bibliography and citation styles are fixed using
+\lstinline{natbib}, setting the bibliography style to
+\lstinline{IEEEtranN}.
+
+Hyperlinks are produced using the \lstinline|hyperref| package.  This
+package also produces bookmarks and sets some of the PDF `document
+properties'.  Anchor placement in floats is improved by loading the
+\lstinline{hypcap} package, with parameter \lstinline{all}.
+
+The \lstinline{UoYCSproject} class works with the versions available
+as part of the \href{http://www.tug.org/texlive/}{\TeX-Live~2007
+  distribution} (\url{http://www.tug.org/texlive/}).
+
+\section{Declarations for the title pages}
+\label{sec:uoycsp:decs}
+
+The available declarations are listed in
+\autoref{tab:UoYCSpdeclarations}.
+\begin{table}[tbp]
+  \centering
+  \begin{tabular}{lcc}
+    \textbf{Declaration}&\textbf{Parameter}&\textbf{Optionality}\\
+    \lstinline|\title|&\lstinline|{short text}|&C\\
+    \lstinline|\author|&\lstinline|{short text}|&C\\
+    \lstinline|\date|&\lstinline|{short text}|&O\\
+    \lstinline|\abstract|&\lstinline|{long text}|&C\\
+    \lstinline|\wordcount|&\lstinline|{short text}|&C\\
+    \lstinline|\includes|&\lstinline|{short text}|&O\\
+    \lstinline|\excludes|&\lstinline|{short text}|&O\\
+    \lstinline|\dedication|&\lstinline|{short text}|&O\\
+    \lstinline|\acknowledgements|&\lstinline|{long text}|&O\\
+    \lstinline|\BEng|&---&1\\
+    \lstinline|\BSc|&---&1\\
+    \lstinline|\MEng|&---&1\\
+    \lstinline|\MMath|&---&1\\
+    \lstinline|\SWE|&---&1\\
+    \lstinline|\SCSE|&---&1\\
+    \lstinline|\MIT|&---&1\\
+    \lstinline|\MNC|&---&1\\
+    \lstinline|\GTC|&---&1
+  \end{tabular}
+  \caption[Declarations of class UoYCSproject]{%
+    Declarations of class UoYCSproject.
+
+    The declarations typeset in \textsf{\textbf{bold, san-serif font}}
+    are common to many classes; the remainder are peculiar to
+    UoYCSproject.  Where declarations take parameters the
+    type of the parameter, short (paragraph breaks forbidden) or long
+    (paragraph breaks allowed) is given.
+
+    The optionality tags have the following meanings:  `C':
+    compulsory; `O': optional; `1': choose exactly one of this group.
+  }
+  \label{tab:UoYCSpdeclarations}
+\end{table}
+
+The \lstinline|\title|, \lstinline|\author| and \lstinline|\date|
+declarations are standard.  You should use them to record: the
+\emph{title of your report}, \emph{your name} and the \emph{date of
+  submission} respectively.  If the date is omitted a message giving
+the date of processing is produced; this should not be on your final
+submission!
+
+You are required to produce an abstract.  Most classes achieve this by
+an \lstinline|abstract| environment in the body (including the
+\KOMAScript\ classes).  This is changed by \lstinline|UoYCSproject| to
+an \lstinline|\abstract| declaration in the preamble.
+
+You also need to give the word count of the parts of the document to
+be marked.  There is a compulsory declaration, \lstinline|\wordcount|,
+to state the actual word count of the main body of the
+report.\footnote{Under Un*x you can do this by running
+  %
+  \lstinline/wc -w/ on the file.
+  %
+  If you split the document between files you can use a command of the
+  pattern
+  %
+  \lstinline/cat file1 file2 file3 | wc -w/.
+  %
+  An alternative is to use the \TeX{}count utility (see
+  \url{http://tug.ctan.org/pkg/texcount}) which has a web interface at
+  \url{http://folk.uio.no/einarro/Services/texcount.html}.} Optionally
+you can generate text that states which extra sections are included,
+and which excluded by the \lstinline|\includes| and
+\lstinline|\excludes| declarations.  If both optional declarations are
+omitted the message produced is:
+\begin{quote}
+  ``This includes the body of the report only.''
+\end{quote}
+If the inclusions only are given, the message produced is:
+\begin{quote}
+  ``This includes the body of the report, and \textless include
+  text\textgreater.''
+\end{quote}
+If the exclusions only are given, the message produced is:
+\begin{quote}
+  ``This includes the body of the report, but not \textless exclude
+  text\textgreater.''
+\end{quote}
+If both are given the message produced is:
+\begin{quote}
+  ``This includes the body of the report, and \textless include
+  text\textgreater, but not \textless exclude text\textgreater.''
+\end{quote}
+
+You should also state which qualification the project contributes to
+by using exactly one of the declarations: \lstinline|\BEng|,
+\lstinline|\BSc|, \lstinline|\MEng|, \lstinline|\MMath|,
+\lstinline|\SWE|, \lstinline|\MIT|, \lstinline|\GTC| or
+\lstinline|\SCSE| (\lstinline|\MIP| is available for historical
+purposes|).  These take no parameter.
+
+You may generate a page with a dedication and/or acknowledgements on
+it by using the declarations \lstinline|\dedication| and
+\lstinline|\acknowledgements|.
+
+Users of the \lstinline|\include| mechanism may add an
+\lstinline|includeonly| declaration.
+
+The title pages are typeset in the usual way, by a
+\lstinline[morekeywords={maketitle}]{\maketitle} command as the first
+command in the body of the document.
+
+\section{Loading your own packages and adding your own commands}
+\label{sec:uoycsp:diy}
+
+Because \lstinline|UoYCSproject| needs to carefully control the order
+of package loading you should include nothing in the preamble other
+than the declarations given in \autoref{sec:uoycsp:decs}.
+
+A non-standard mechanism is provided for loading your own packages and
+declaring your own commands and environments.  If your main file is
+called \lstinline|<main>.tex|, then the extra preamble should go in a
+file called \lstinline|<main>.ldf| (for \emph{L}ocal
+\emph{D}e\emph{f}initions).
+
+\section{Other non-standard facilities}
+\label{sec:nonstandard} 
+
+\subsection{Citations}
+\label{sec:citations}
+
+The citation mechanism in \lstinline{UoYCSproject} is different from
+the standard, which uses the command \lstinline{\cite}.  It uses the
+more flexible scheme implemented by the \lstinline{natbib} package, of
+\lstinline{\citep} for parenthesised citations and \lstinline{\citet}
+for citations as text.  See \autoref{sec:bibliographies}.
+
+The command \lstinline{\cite} is defined to be the same as
+\lstinline{\citet} (which is probably not what you want).
+
+\subsection{Cross references}
+\label{sec:labels}
+
+The standard mechanism (\lstinline|\ref{label}|) works, but
+\lstinline|\autoref{label}| is preferred.  The \lstinline{\autoref}
+command generates the location type (section, subsection, or whatever)
+as well as the location number.  See \autoref{sec:crossrefs}.
+
+\bibliography{references}
+
+\appendix
+\cleardoublepage
+\part{Appendices}
+\thispagestyle{empty}\cleardoublepage
+
+\chapter{Packages not pre-loaded that you may find useful}
+\label{cha:usefulpackages}
+
+These are packages that might help you with special tasks in writing
+your report.  (I have omitted specialist packages that some people
+might find useful, such as the package which provides support for
+Braille.)
+
+If these packages are not in our standard \TeX-Live release they can
+be obtained from the Common \TeX{} Archive Network (CTAN); this is
+easiest via the catalogue
+(\url{http://www.tex.ac.uk/tex-archive/help/Catalogue/}).  Even if we
+do have the packages, you may wish to check for later versions.
+
+\section{Main document}
+
+\begin{description}
+\item[array] Improves the facilities for tabular and array
+  environments. 
+\item[acronym] Helps you manage acronyms, ensuring that
+  all are printed in full at least once.  It can generate a list of
+  used acronyms, too.
+\item[amsmath] Enhanced mathematical type-setting; there are several
+  ancillary packages.
+\item[calc] Allows easier arithmetic calculations than native mode.
+  The documentation comes with a syntax, formal semantics and
+  implementation scheme, as well as an informal narrative.
+\item[changebar] Allows you to indicate changes to your document by a
+  bar in the margin.  (Useful for showing drafts to your supervisor.)
+\item[glossaries] To aid production of a glossary.
+\item[graphics] To include pictures from external sources
+\item[graphicx] Like `graphics', but with a `key=value' interface.
+\item[listings] To pretty-print code listings.  Several languages are
+  predefined, and you can define your own.
+\item[movie15] To insert moving images in the PDF.  Particularly
+  useful for presentations of physical artefacts (see
+  \autoref{sec:presentationpackages}).
+\item[pdfcomment] Allows you to take advantage of the PDF comment and
+  annotation facilities, for on-line copies but \emph{not} the printed
+  copy.  (PDF comments are not widely supported outside of Adobe
+  products.)
+\item[pdfpages] Allows you to include a PDF document inside your
+  \LaTeXe\ document.  It is very flexible, allowing you to select
+  pages, print \emph{n} logical pages per physical page, and so on.
+\item[pgf/tikz] Allows more complex drawings than native \LaTeXe{}
+  mode.  Suitable for all flavours of \LaTeXe{}.  There is a very well
+  designed font end to \lstinline{pgf}, called \lstinline{TikZ}, that
+  makes drawing diagrams much easier.
+\item[siunitx] For consistent typesetting of physical quantities.
+\item[todonotes] Allows you to insert `to do' markers that are
+  visually obvious, and to generate a table-of-contents-like list of
+  them.
+\end{description}
+
+\section{Presentations}
+\label{sec:presentationpackages}
+
+You may need to give a presentation, and there are several \LaTeXe{}
+packages for preparing slides; a good list may be found at
+\url{http://www.miwie.org/presentations/}.
+
+The main advantage of using a \LaTeXe{}-based solution for
+presentations is being able to re-use your \LaTeXe{} source and avoid
+re-typing everything for \lstinline|PowerPoint| (or similar
+presentation tool, such as the one in \lstinline|OpenOffice|).  The
+package of choice for most people is \lstinline|beamer|.  Section~5 of
+the Beamer \emph{User's Guide} gives a lot of good advice on creating
+presentations, even (or especially) if you opt to use
+\lstinline|PowerPoint|.
+
+\cleardoublepage
+\chapter{Common \LaTeXe\ `Gotchas'}
+\label{cha:gotchas}
+
+There are just a few things that trip up a newcomer to \TeX{},
+\LaTeXe{} and \BibTeX.
+
+\section{Parameterless macros gobble white space}
+
+\subsection{Problem}
+Any macro gobbles all the white space following up to the next
+non-white space character.  This does not matter if the next thing is
+a parameter, but it does matter otherwise.  For example,
+`\lstinline[showspaces]{\LaTeXe is easy.}' typesets as `\LaTeXe is
+easy.'.
+
+\subsection{Solution}
+A solution is to always protect the white space by preceding it with a
+backslash: `\lstinline[showspaces]{\LaTeXe\ is easy.}'.  Another
+solution is to always follow a parameterless macro with empty braces:
+`\lstinline[showspaces]/\LaTeXe{} is easy./'.  Both typeset as
+`\LaTeXe{} is easy.'.  The second solution is more robust if the white
+space is replaced by something else, such as punctuation.
+
+\section{Confusion between end of abbreviation and end-of sentence}
+
+\subsection{Problem}
+
+\TeX{} treats a full stop, `.' between a non-capital letter and white
+space as indicating an end of a sentence, and so it generates a
+sentence-separating space rather than a word-separating space.  The
+problem most commonly arises with abbreviations such as `etc.', `i.\
+e.', `e.\ g.' and so on.\footnote{Some people think it is better style
+  to use `and so on', `that is' and `for example', and so on, neatly
+  avoiding the problem; it also avoids the quite common confusion
+  between `i.\ e.' and `e.\ g.'.}
+
+\subsection{Solution}
+
+Protect any such spaces with a backslash.  \lstinline[showspaces]{\ }
+is always treated as an inter-word space.  See \autoref{sec:spaces}.
+
+\section{Wrong type of dash}
+
+There are four different types of dash available in \TeX-based
+systems. The different dashes have different uses: see
+\autoref{sec:dashes} for a discussion.
+
+\section{Wrong type of quote}
+
+In \TeX-based systems quotation marks come in balanced pairs:
+\begin{itemize}
+\item `6-9 quote marks' (enlarged: {\Huge`}\ldots{\Huge'})
+\item ``66-99 quote marks'' (enlarged: {\Huge``}\ldots{\Huge''})
+\end{itemize}
+None of these are made using the `\lstinline{"}' key.  The `6' quote
+marks are produced by a different key to the `9' quote marks.  See
+\autoref{sec:quotations}.
+
+\section{`Fragile' commands in `moving' arguments}
+
+\subsection{Problem}
+
+Some arguments to \LaTeXe{} commands are known as \emph{moving
+  arguments}.  These are arguments that are potentially typeset
+elsewhere in the document (and may or may not be typeset at the point
+they occur).  An example is the title of a chapter; as well as being
+typeset at the point it occurs it will be typeset a second time as
+part of the table of contents.
+
+Some \LaTeXe{} commands are \emph{fragile}: they break if moved.
+These are few in number, and they are rarely used in moving arguments
+(this document contains none).  Examples include
+\lstinline|\footnote{|\ldots\lstinline|}|, \lstinline|\begin|,
+  \lstinline|\end| and all commands with an optional argument.
+\begin{lstlisting}
+  \chapter{Typesetting footnotes\footnote{Footnotes are fragile}}
+\end{lstlisting}
+causes an error.
+
+\subsection{Solution}
+Fragile commands in moving arguments should be \emph{protected}.
+\begin{lstlisting}
+  \chapter{Typesetting footnotes\protect\footnote{Footnotes are fragile}}
+\end{lstlisting}
+does not break.
+
+That example would give an odd-looking table of contents.  Even better
+is:
+\begin{lstlisting}
+  \chapter[Typesetting footnotes]{%
+    Typesetting footnotes\footnote{Footnotes are fragile}}
+\end{lstlisting}
+which moves the optional argument and typesets the compulsory argument
+in place.  (See also \autoref{lst:label}.)
+
+\section{\BibTeX{} gotchas}
+\label{sec:BibTeXgotchas}
+
+There are two features that often catch people out when preparing
+bibliography files.
+
+\begin{enumerate}
+\item Multiple authors in an author field must be separated with
+  `\lstinline|and|':
+  \begin{lstlisting}[gobble=4]
+    author = {John Smith and Brown, Mary and Joe Green and Lillian White}
+  \end{lstlisting}
+  Commas must \emph{not} be used to separate names as they are used to
+  indicate a surname occurring before the forename (as in `Brown,
+  Mary').
+\item \BibTeX{} may change capitalisation of your text.  Capital
+  letters that must stay as capital letters should be protected from
+  \BibTeX's formatting by braces:
+  \begin{lstlisting}[gobble=4]
+    title = {A Guide to {C++}: Its use with {Z}, {B} and {Alloy}}
+  \end{lstlisting}
+\end{enumerate}
+
+\cleardoublepage
+\chapter{Running \LaTeX{} on the departmental systems}
+\label{cha:deptfac}
+
+\section{Under GNU/Linux}
+\label{sec:GNU/Linux}
+
+The default departmental \TeX{}-and-friends installation is the latest
+\TeX{}Live distribution (see
+\url{http://www.cs.york.ac.uk/support/texlive.php}).  You will need
+\lstinline|/usr/local/bin| in your \lstinline|PATH| to access it.
+
+You may also wish to set a variable called \lstinline|TEXINPUTS| if
+you have private collections of macros.  This variable is a
+colon-separated list of directories (just like \lstinline|PATH|) for
+\TeX{} to search.  If you keep everything in the same directory then
+the default value should be good enough.  The default value is
+\lstinline|.::|, the empty directory name meaning `the standard
+library installed with \TeX{}Live'.
+
+To run \LaTeXe{} from the command line on a file called
+\lstinline|foo.tex| you type the command `\lstinline|pdflatex foo|' to
+produce a PDF file called \lstinline|foo.pdf|.  Similarly, to extract
+the bibliographic information associated with \lstinline|foo.tex| you
+should run `\lstinline|bibtex foo|' \emph{after} running \LaTeXe{} ---
+see \autoref{cha:editprocess}.
+
+If you want to use AUC\TeX{} with emacs then you need to put
+\begin{lstlisting}[language=lisp,gobble=2]
+  (load "auctex.el" nil t t)
+  (load "preview-latex.el" nil t t)
+\end{lstlisting}
+in your \lstinline|.emacs| file.
+
+
+\section{Under Microsoft Windows}
+\label{sec:MSW}
+
+I have never done this.  I am told that \lstinline|WinEDT| is the tool
+to use.
+
+\cleardoublepage
+
+\chapter{\autoref{lst:quoteex} typeset}
+\label{cha:quoteex}
+
+The typeset version of \autoref{lst:quoteex} is between the horizontal
+lines.  Note that \TeX{} could not find an ideal break for the 3rd
+paragraph (unsurprisingly, as this is a difficult text to typeset),
+and so has let one line protrude too far.
+
+\noindent\rule{\textwidth}{1pt}
+\input{joyce}
+\noindent\rule{\textwidth}{1pt}
+
+\end{document}
