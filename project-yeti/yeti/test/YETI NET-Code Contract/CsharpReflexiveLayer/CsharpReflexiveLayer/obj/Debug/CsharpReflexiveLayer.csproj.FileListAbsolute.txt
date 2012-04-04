@@ -1,8 +1,0 @@
-C:\Users\st552\Documents\Visual Studio 2008\Projects\CsharpReflexiveLayer\CsharpReflexiveLayer\bin\Debug\CsharpReflexiveLayer.Contracts.dll
-C:\Users\st552\Documents\Visual Studio 2008\Projects\CsharpReflexiveLayer\CsharpReflexiveLayer\bin\Debug\CsharpReflexiveLayer.Contracts.pdb
-C:\Users\st552\Documents\Visual Studio 2008\Projects\CsharpReflexiveLayer\CsharpReflexiveLayer\bin\Debug\CsharpReflexiveLayer.exe
-C:\Users\st552\Documents\Visual Studio 2008\Projects\CsharpReflexiveLayer\CsharpReflexiveLayer\bin\Debug\CsharpReflexiveLayer.pdb
-C:\Users\st552\Documents\Visual Studio 2008\Projects\CsharpReflexiveLayer\CsharpReflexiveLayer\bin\Debug\Microsoft.Contracts.dll
-C:\Users\st552\Documents\Visual Studio 2008\Projects\CsharpReflexiveLayer\CsharpReflexiveLayer\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\st552\Documents\Visual Studio 2008\Projects\CsharpReflexiveLayer\CsharpReflexiveLayer\obj\Debug\CsharpReflexiveLayer.exe
-C:\Users\st552\Documents\Visual Studio 2008\Projects\CsharpReflexiveLayer\CsharpReflexiveLayer\obj\Debug\CsharpReflexiveLayer.pdb
