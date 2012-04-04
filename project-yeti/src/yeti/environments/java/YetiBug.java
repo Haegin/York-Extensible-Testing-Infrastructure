@@ -58,6 +58,7 @@ public class YetiBug {
 		    return ExceptionUtils.getStackTrace(throwable);
 		}
 		
+		// TODO: write a unit test for this
 		public String getStackTraceWithoutYeti() {
 		    String[] stacktrace = ExceptionUtils.getStackTrace(throwable).split("[\r\n]+"); // Split on linebreaks and remove empty lines
 		    StringBuilder sb = new StringBuilder(stacktrace[0]);
@@ -126,10 +127,10 @@ public class YetiBug {
 		        String matcher;
 		        
 		        // Work out what we're looking for
-		        if (this.usefulMethodName().equals(this.className)) {
+		        if (this.getUsefulMethodName().equals(this.className)) {
 		            matcher = this.className + ".<init>";
 		        } else {
-		            matcher = this.className + "." + this.usefulMethodName();
+		            matcher = this.className + "." + this.getUsefulMethodName();
 		        }
 		        
 		        // Find the line we're interested in
@@ -147,14 +148,18 @@ public class YetiBug {
 		        // so we need to:
 		        // match the Coordinator.java:\d\d bit and get the number.
 		        String filename = this.className.substring(this.className.lastIndexOf('.') + 1) + ".java";
-		        String linenumber = interestingLine.substring(interestingLine.lastIndexOf(filename) + 1, interestingLine.lastIndexOf(')'));
+		        String linenumber = interestingLine.substring(interestingLine.lastIndexOf(filename) + 1 + filename.length(), interestingLine.lastIndexOf(')'));
 		        this.lineNumber =  Integer.parseInt(linenumber);
 		    }
 		}
 		
-		private String usefulMethodName() {
+		public String getUsefulMethodName() {
 		    if (this.usefulMethodName != null) {
-		        this.usefulMethodName = this.methodName.substring(0, this.methodName.lastIndexOf('-'));
+		        if (this.methodName.contains("_")) {
+    		        this.usefulMethodName = this.methodName.substring(this.methodName.lastIndexOf('.') + 1, this.methodName.lastIndexOf('_'));
+		        } else {
+		            this.usefulMethodName = this.methodName;
+		        }
 		    }
 		    return this.usefulMethodName;
 		}
