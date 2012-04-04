@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/jmlruntime.jar"/>
+	<classpathentry kind="lib" path="lib/jmlmodels.jar"/>
+	<classpathentry kind="lib" path="lib/jmljunitruntime.jar"/>
+	<classpathentry kind="lib" path="lib/jmlmodelsnonrac.jar"/>
+	<classpathentry kind="lib" path="lib/hadoop-0.19.2-core.jar"/>
+	<classpathentry kind="lib" path="lib/javassist.jar"/>
+	<classpathentry kind="lib" path="lib/jgap.jar"/>
+	<classpathentry kind="lib" path="lib/cofoja.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/kermeta-interpreter-lite.jar"/>
+	<classpathentry kind="lib" path="lib/kermeta-simplified-interpreter.jar"/>
+	<classpathentry kind="lib" path="lib/jargs.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang3-3.1/commons-lang3-3.1.jar" sourcepath="lib/commons-lang3-3.1/commons-lang3-3.1-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/yeti/lib/commons-lang3-3.1/commons-lang3-3.1-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/postgresql-9.1-901.jdbc4.jar"/>
+	<classpathentry kind="lib" path="C:/PRIY/pitest-0.25.jar"/>
+	<classpathentry kind="lib" path="C:/PRIY/junit-4.10.jar" sourcepath="C:/PRIY/junit-4.10-src.jar"/>
+	<classpathentry kind="output" path="build"/>
+</classpath>

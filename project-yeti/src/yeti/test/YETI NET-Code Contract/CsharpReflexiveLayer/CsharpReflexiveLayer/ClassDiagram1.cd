@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CsharpReflexiveLayer.Program" Collapsed="true">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CsharpReflexiveLayer.YetiCsharpConstructor" Collapsed="true">
+    <Position X="4.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAEAAAAAAAAAAABAAAAAAAAAACAAAA=</HashCode>
+      <FileName>YetiCsharpConstructor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CsharpReflexiveLayer.YetiCsharpInitializer" Collapsed="true">
+    <Position X="6.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAEAAAAAAgAAAAIAEEAAAAAAAAAAAAAAAAAQAIIBE=</HashCode>
+      <FileName>YetiCsharpInitializer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CsharpReflexiveLayer.YetiCsharpInterface" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>YetiCsharpInterface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CsharpReflexiveLayer.YetiCsharpLogProcessor" Collapsed="true">
+    <Position X="8.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>YetiCsharpLogProcessor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CsharpReflexiveLayer.YetiCsharpMethod" Collapsed="true">
+    <Position X="3" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAQAAAEAAAAAAAAAAABAgAAAAAAAACAAAA=</HashCode>
+      <FileName>YetiCsharpMethod.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CsharpReflexiveLayer.YetiCsharpModule" Collapsed="true">
+    <Position X="4.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>YetiCsharpModule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CsharpReflexiveLayer.YetiCsharpPrefetchingLoader" Collapsed="true">
+    <Position X="6.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>YetiCsharpPrefetchingLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CsharpReflexiveLayer.YetiCsharpProperties" Collapsed="true">
+    <Position X="8.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAQAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>YetiCsharpProperties.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CsharpReflexiveLayer.YetiCsharpRoutine" Collapsed="true">
+    <Position X="3" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>YetiCsharpRoutine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CsharpReflexiveLayer.YetiCsharpSpecificType" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAACAAAAAAAAAAEAAAAAAAAAAAAAACAAAAQQAAAAAA=</HashCode>
+      <FileName>YetiCsharpSpecificType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CsharpReflexiveLayer.YetiCsharpTestManager" Collapsed="true">
+    <Position X="4.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>YetiCsharpTestManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CsharpReflexiveLayer.YetiSocketConnection" Collapsed="true">
+    <Position X="6.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>YetiSocketConnection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

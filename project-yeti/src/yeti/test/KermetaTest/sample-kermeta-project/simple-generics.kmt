@@ -1,0 +1,23 @@
+package simple;
+
+require "platform:/resource/simple.kmt"
+require kermeta
+using kermeta::standard
+
+
+class GenericClass<T : A>
+{
+
+	attribute t : T
+
+	operation printMyself() is
+	do
+		stdio.writeln("Appel printMyself de GenericClass"+self.toString)
+	end
+
+	operation useParamClass(test : T) is
+	do
+		stdio.writeln("Appel useParamClass de GenericClass avec "+test.toString)
+		t := test
+	end
+}
