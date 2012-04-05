@@ -20,7 +20,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/postgresql-9.1-901.jdbc4.jar"/>
-	<classpathentry kind="lib" path="C:/PRIY/pitest-0.25.jar"/>
-	<classpathentry kind="lib" path="C:/PRIY/junit-4.10.jar" sourcepath="C:/PRIY/junit-4.10-src.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.10.jar"/>
+	<classpathentry kind="lib" path="lib/pitest-0.25.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
